@@ -1,0 +1,105 @@
+<template name="project">
+
+  		{{> nav}}
+  		<div id="loader-wrapper">
+				<div id="loader"></div>
+
+				<div class="loader-section section-left"></div>
+        <div class="loader-section section-right"></div>
+
+		</div>
+
+	{{#with currentProject}}
+	<div class="container-fluid" id="content">
+			<div class="row">
+			  	<div id="sidebar" class="sidebar">
+			  		<ul class="nav nav-pills nav-stacked">
+			  			<li  class="active">
+								<a href="/">
+									<span class="glyphicon glyphicon-th-list"></span> Proyectos
+								</a>
+							</li>
+						</ul>
+						<div class="nav-stacked mi-nav">
+
+							<h4>{{name}}</h4>
+
+							<div class="list-group">
+
+								<a href="#" class="list-group-item" data-toggle="collapse" data-target="#collapsePages" aria-expanded="true">
+									<span class="glyphicon glyphicon-file"></span> Páginas <b class="caret"></b>
+								</a>
+								<div class="collapse in" id="collapsePages">
+								    <div class="list-group pages-list-group">
+								    	{{#each currentProjectPages}}
+								    		{{>eachPageInList}}
+								    	{{/each}}
+								    	<a class="badge my-badge add-page list-group-item" href="#" >
+											<span class="glyphicon glyphicon-plus"></span>
+										</a>
+								    </div>
+								</div>
+
+								<a href="#" class="list-group-item" data-toggle="collapse" data-target="#collapseGrid" aria-expanded="false">
+									<span class="glyphicon glyphicon-th"></span> Grid System <b class="caret"></b>
+								</a>
+								<div>
+								  <div class="well collapse" id="collapseGrid">
+										<div class="list-group widgets-list-group">
+								    	{{#each grid}}
+								    		{{>eachGridInList}}
+								    	{{/each}}
+								    </div>
+								  </div>
+								</div>
+
+								<a href="#" class="list-group-item" data-toggle="collapse" data-target="#collapseWidgets" aria-expanded="false">
+									<span class="glyphicon glyphicon-th"></span> Widgets <b class="caret"></b>
+								</a>
+								<div>
+								  <div class="well collapse" id="collapseWidgets">
+										<div class="list-group widgets-list-group">
+								    	{{#each widgets}}
+								    		{{>eachWidgetInList}}
+								    	{{/each}}
+								    </div>
+								  </div>
+								</div>
+							</div>
+						</div>
+			  	</div>
+
+		  	<div class="page-container " id="content">
+					{{> page}}
+				</div>
+			</div>
+	  </div>
+		{{/with}}
+
+	{{> footer}}
+
+</template>
+
+<template name="eachPageInList">
+	<a href="#" class="list-group-item page-item" id="{{_id}}">
+		<span class="badge my-badge">
+			<a href="#" class="remove-page" ><span class="glyphicon glyphicon-remove"></span></a>
+		</span>
+		<span class="badge my-badge">
+			<a href="#" class="edit-page"><span class="glyphicon glyphicon-pencil"></span></a>
+		</span>
+		{{name}}
+	</a>
+</template>
+
+<template name="eachWidgetInList">
+	<a href="#" class="btn btn-default widget " title="{{name}}">
+		<span class="{{icon}}"></span>
+	</a>
+</template>
+
+<template name="eachGridInList">
+	<a href="#" class="btn btn-default grid" title="{{name}}">
+		<span class="{{icon}}"></span>
+	</a>
+</template>

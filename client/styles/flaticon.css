@@ -1,0 +1,179 @@
+@font-face {
+	font-family: "Flaticon";
+	src: url("/fonts/flaticon.eot");
+	src: url("/fonts/flaticon.eot#iefix") format("embedded-opentype"),
+	url("/fonts/flaticon.woff") format("woff"),
+	url("/fonts/flaticon.ttf") format("truetype"),
+	url("/fonts/flaticon.svg") format("svg");
+	font-weight: normal;
+	font-style: normal;
+}
+[class^="flaticon-"]:before, [class*=" flaticon-"]:before,
+[class^="flaticon-"]:after, [class*=" flaticon-"]:after {
+	font-family: "Flaticon";
+        font-size: 40px;
+font-style: normal;
+
+}
+.flaticon-annual3:before {
+	content: "\e000";
+}
+.flaticon-applicattion:before {
+	content: "\e001";
+}
+.flaticon-autorship:before {
+	content: "\e002";
+}
+.flaticon-calendars12:before {
+	content: "\e003";
+}
+.flaticon-check30:before {
+	content: "\e004";
+}
+.flaticon-check51:before {
+	content: "\e005";
+}
+.flaticon-check7:before {
+	content: "\e006";
+}
+.flaticon-checklist:before {
+	content: "\e007";
+}
+.flaticon-computer90:before {
+	content: "\e008";
+}
+.flaticon-crop18:before {
+	content: "\e009";
+}
+.flaticon-direction9:before {
+	content: "\e00a";
+}
+.flaticon-drop10:before {
+	content: "\e00b";
+}
+.flaticon-edition1:before {
+	content: "\e00c";
+}
+.flaticon-file211:before {
+	content: "\e00d";
+}
+.flaticon-font13:before {
+	content: "\e00e";
+}
+.flaticon-graphicseditor24:before {
+	content: "\e00f";
+}
+.flaticon-http1:before {
+	content: "\e010";
+}
+.flaticon-icomoon1:before {
+	content: "\e011";
+}
+.flaticon-identification19:before {
+	content: "\e012";
+}
+.flaticon-image2:before {
+	content: "\e013";
+}
+.flaticon-image6:before {
+	content: "\e014";
+}
+.flaticon-info8:before {
+	content: "\e015";
+}
+.flaticon-information38:before {
+	content: "\e016";
+}
+.flaticon-internet43:before {
+	content: "\e017";
+}
+.flaticon-internet6:before {
+	content: "\e018";
+}
+.flaticon-letterx:before {
+	content: "\e019";
+}
+.flaticon-line22:before {
+	content: "\e01a";
+}
+.flaticon-link37:before {
+	content: "\e01b";
+}
+.flaticon-list-1:before {
+	content: "\e01c";
+}
+.flaticon-list100:before {
+	content: "\e01d";
+}
+.flaticon-load1:before {
+	content: "\e01e";
+}
+.flaticon-magnifyingglass29:before {
+	content: "\e01f";
+}
+.flaticon-maleuser:before {
+	content: "\e020";
+}
+.flaticon-menu55:before {
+	content: "\e021";
+}
+.flaticon-message31:before {
+	content: "\e022";
+}
+.flaticon-move14:before {
+	content: "\e023";
+}
+.flaticon-movie18:before {
+	content: "\e024";
+}
+.flaticon-multimediaoption20:before {
+	content: "\e025";
+}
+.flaticon-numbered6:before {
+	content: "\e026";
+}
+.flaticon-options15:before {
+	content: "\e027";
+}
+.flaticon-play37:before {
+	content: "\e028";
+}
+.flaticon-playvideo3:before {
+	content: "\e029";
+}
+.flaticon-rectangular4:before {
+	content: "\e02a";
+}
+.flaticon-round69:before {
+	content: "\e02b";
+}
+.flaticon-serif:before {
+	content: "\e02c";
+}
+.flaticon-speechballoon9:before {
+	content: "\e02d";
+}
+.flaticon-speechbubble65:before {
+	content: "\e02e";
+}
+.flaticon-spreadsheet7:before {
+	content: "\e02f";
+}
+.flaticon-stop1:before {
+	content: "\e030";
+}
+.flaticon-text1:before {
+	content: "\e031";
+}
+.flaticon-text69:before {
+	content: "\e032";
+}
+.flaticon-tool7:before {
+	content: "\e033";
+}
+.flaticon-typography2:before {
+	content: "\e034";
+}
+.flaticon-visibility1:before {
+	content: "\e035";
+}

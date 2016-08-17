@@ -1,0 +1,16 @@
+<template name="nav">
+	<div class="navbar navbar-fixed-top navbar-inverse" role="navigation">
+        <div class="navbar-header">
+            <a class="navbar-brand" href="/">Easy Mock</a>
+        </div>
+        <div class="navbar-collapse collapse">
+					<input class="btn btn-default btn-sm preview-button" type="button" value="Preview (o Run)">
+					<input class="btn btn-default btn-sm edit-button" type="button" value="Edit">
+            <ul class="nav navbar-nav navbar-right">
+                {{> loginButtons}}
+            </ul>
+        </div>
+    </div>
+    <div class="navbar-spacer"></div>
+
+</template>

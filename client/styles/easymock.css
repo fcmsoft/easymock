@@ -1,0 +1,324 @@
+/* CSS declarations go here */
+html, body {
+    height: 100%;
+}
+#wrap {
+    height: auto;
+    margin: 0 auto -60px;
+    min-height: 100%;
+    padding: 0 0 60px;
+}
+#footer {
+    height: 50px;
+    margin-top: 20px;
+}
+.navbar {
+    border-width: 0;
+}
+
+.navbar .btn-sm {
+    margin-top: 10px;
+}
+
+.navbar-spacer {
+  height: 50px;
+}
+
+.navbar-fixed-top, .navbar-fixed-bottom {
+    border-radius: 0;
+}
+.sidebar {
+    top: 61px;
+}
+
+.builder.preview {
+    margin-left: 0;
+}
+
+.builder.preview .sidebar {
+  left: -220px;
+  transition: all 0ms ease;
+}
+
+.builder .sidebar {
+    bottom: 0;
+    display: block;
+    left: 0;
+    overflow-x: hidden;
+    overflow-y: auto;
+    padding: 10px;
+    position: fixed;
+    width: 220px;
+    top: 51px;
+    z-index: 1000;
+    border-right: 2px solid #888;
+    bottom: 60px;
+    transition: all 500ms ease;
+}
+
+.container-fluid  .jumbotron {
+  text-align: center;
+  padding-bottom: 40px;
+  padding-top: 30px;
+}
+
+.formularios, .container-fluid  .jumbotron {
+  margin: 0 auto;
+  padding-right: 15%;
+  padding-left: 15%;
+  margin-bottom: 10px;
+}
+.panel-green {
+    border-color: #5cb85c;
+}
+
+.panel-green > .panel-heading {
+    border-color: #5cb85c;
+    color: #fff;
+    background-color: #5cb85c;
+}
+
+.panel-green > a {
+    color: #5cb85c;
+}
+
+.panel-green > a:hover {
+    color: #3d8b3d;
+}
+
+.badge.my-badge {
+  background-color: transparent;
+}
+
+.row.row-button {
+  margin-bottom: 10px;
+}
+
+body.builder {
+  margin-left: 220px;
+}
+
+.projects {
+  margin-top: 20px;
+}
+
+.mi-nav{
+  margin-top: 10px;
+  padding-top: 10px;
+  border-top: 1px solid #888;
+}
+
+.page-container {
+    background-color: #ccc;
+    height: 1000px;
+}
+
+.page {
+    height: 100%;
+    background-color: #FFF;
+    border: 1px solid #DDD;
+    padding: 15px;
+    position: relative;
+}
+
+.popover-content .row {
+    padding-bottom: 15px;
+    border-bottom: 1px solid #ebebeb;
+    padding-top: 5px;
+    width: 450px;
+}
+
+.popover {
+    max-width: 500px;
+}
+
+.editText {
+    width: 300px;
+}
+.popover-content .row:last-child {
+    border: none;
+}
+/** widgets */
+.widget {
+    margin-bottom: 5px;
+}
+
+/** NODE STYLE ***/
+.node {
+    padding: 4px;
+}
+.node.active {
+    border: 1px dotted red;
+}
+
+.insertPoint {
+  border: 1px dashed red;
+}
+
+.contenedor .column {
+  border: 1px dashed #ccc;
+  min-height: 40px;
+}
+
+.contenedor .row {
+  margin: 0;
+}
+/** properties panel **/
+.properties {
+
+}
+
+.applyEditText {
+  margin-top: 20px;
+  float: right;
+}
+
+.properties-form-group {
+  margin-top: 10px;
+}
+
+/** Modal **/
+.modal-body {
+    min-height: 80px;
+}
+/*preload*/
+#loader-wrapper {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    z-index: 1000;
+}
+#loader {
+    display: block;
+    position: relative;
+    left: 50%;
+    top: 50%;
+    width: 150px;
+    height: 150px;
+    margin: -75px 0 0 -75px;
+    border-radius: 50%;
+    border: 3px solid transparent;
+    border-top-color: #3498db;
+
+    -webkit-animation: spin 2s linear infinite; /* Chrome, Opera 15+, Safari 5+ */
+    animation: spin 2s linear infinite; /* Chrome, Firefox 16+, IE 10+, Opera */
+
+    z-index: 1001;
+}
+
+    #loader:before {
+        content: "";
+        position: absolute;
+        top: 5px;
+        left: 5px;
+        right: 5px;
+        bottom: 5px;
+        border-radius: 50%;
+        border: 3px solid transparent;
+        border-top-color: #e74c3c;
+
+        -webkit-animation: spin 3s linear infinite; /* Chrome, Opera 15+, Safari 5+ */
+        animation: spin 3s linear infinite; /* Chrome, Firefox 16+, IE 10+, Opera */
+    }
+
+    #loader:after {
+        content: "";
+        position: absolute;
+        top: 15px;
+        left: 15px;
+        right: 15px;
+        bottom: 15px;
+        border-radius: 50%;
+        border: 3px solid transparent;
+        border-top-color: #f9c922;
+
+        -webkit-animation: spin 1.5s linear infinite; /* Chrome, Opera 15+, Safari 5+ */
+          animation: spin 1.5s linear infinite; /* Chrome, Firefox 16+, IE 10+, Opera */
+    }
+
+    @-webkit-keyframes spin {
+        0%   {
+            -webkit-transform: rotate(0deg);  /* Chrome, Opera 15+, Safari 3.1+ */
+            -ms-transform: rotate(0deg);  /* IE 9 */
+            transform: rotate(0deg);  /* Firefox 16+, IE 10+, Opera */
+        }
+        100% {
+            -webkit-transform: rotate(360deg);  /* Chrome, Opera 15+, Safari 3.1+ */
+            -ms-transform: rotate(360deg);  /* IE 9 */
+            transform: rotate(360deg);  /* Firefox 16+, IE 10+, Opera */
+        }
+    }
+    @keyframes spin {
+        0%   {
+            -webkit-transform: rotate(0deg);  /* Chrome, Opera 15+, Safari 3.1+ */
+            -ms-transform: rotate(0deg);  /* IE 9 */
+            transform: rotate(0deg);  /* Firefox 16+, IE 10+, Opera */
+        }
+        100% {
+            -webkit-transform: rotate(360deg);  /* Chrome, Opera 15+, Safari 3.1+ */
+            -ms-transform: rotate(360deg);  /* IE 9 */
+            transform: rotate(360deg);  /* Firefox 16+, IE 10+, Opera */
+        }
+    }
+
+    #loader-wrapper .loader-section {
+        position: fixed;
+        top: 0;
+        width: 51%;
+        height: 100%;
+        background: #222222;
+        z-index: 1000;
+        -webkit-transform: translateX(0);  /* Chrome, Opera 15+, Safari 3.1+ */
+        -ms-transform: translateX(0);  /* IE 9 */
+        transform: translateX(0);  /* Firefox 16+, IE 10+, Opera */
+    }
+
+    #loader-wrapper .loader-section.section-left {
+        left: 0;
+    }
+
+    #loader-wrapper .loader-section.section-right {
+        right: 0;
+    }
+
+    /* Loaded */
+    .loaded #loader-wrapper .loader-section.section-left {
+        -webkit-transform: translateX(-100%);  /* Chrome, Opera 15+, Safari 3.1+ */
+            -ms-transform: translateX(-100%);  /* IE 9 */
+                transform: translateX(-100%);  /* Firefox 16+, IE 10+, Opera */
+
+        -webkit-transition: all 0.7s 0.3s cubic-bezier(0.645, 0.045, 0.355, 1.000);
+                transition: all 0.7s 0.3s cubic-bezier(0.645, 0.045, 0.355, 1.000);
+    }
+
+    .loaded #loader-wrapper .loader-section.section-right {
+        -webkit-transform: translateX(100%);  /* Chrome, Opera 15+, Safari 3.1+ */
+            -ms-transform: translateX(100%);  /* IE 9 */
+                transform: translateX(100%);  /* Firefox 16+, IE 10+, Opera */
+
+-webkit-transition: all 0.7s 0.3s cubic-bezier(0.645, 0.045, 0.355, 1.000);
+        transition: all 0.7s 0.3s cubic-bezier(0.645, 0.045, 0.355, 1.000);
+    }
+
+    .loaded #loader {
+        opacity: 0;
+        -webkit-transition: all 0.3s ease-out;
+                transition: all 0.3s ease-out;
+    }
+    .loaded #loader-wrapper {
+        visibility: hidden;
+
+        -webkit-transform: translateY(-100%);  /* Chrome, Opera 15+, Safari 3.1+ */
+            -ms-transform: translateY(-100%);  /* IE 9 */
+                transform: translateY(-100%);  /* Firefox 16+, IE 10+, Opera */
+
+        -webkit-transition: all 0.3s 1s ease-out;
+                transition: all 0.3s 1s ease-out;
+    }
+
+    /* JavaScript Turned Off */
+    .no-js #loader-wrapper {
+        display: none;
+    }
