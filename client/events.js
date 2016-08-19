@@ -206,7 +206,6 @@ Template.project.events({
     e.preventDefault();
     //buscar el nodo anterior mas cercano
     if (pageNodes.length > 2) {
-
       pageNodes.each(function(){
         var nodePosY = getPosition(this).top;
         if (y > nodePosY) {
@@ -235,9 +234,8 @@ Template.project.events({
     Meteor.call('updatePageContent', Session.get('currentProjectId'), Session.get('currentPage'), page.html());
   },
 
-  'drop .contenedor': function (e, tpl) { console.log('ENTRE A DROP container');
+  'drop .contenedor .row .column': function (e, tpl) { console.log('ENTRE A DROP container', $(e.currentTarget).parent().parent());
     e.stopPropagation();
-
     var data = e.originalEvent.dataTransfer.getData('application/json');
     data = JSON.parse(data);
 
@@ -268,7 +266,7 @@ Template.project.events({
     } else {
         template = Widgets.findOne({name:data.name}).template;
     }
-    node.attr('id',$(e.currentTarget).attr('id')+'-'+(nextId+1));
+    node.attr('id',$(e.currentTarget).parent().parent().attr('id')+'-'+(nextId+1));
     node.html(template);
 
     if (nodeSelected) {
@@ -277,7 +275,7 @@ Template.project.events({
         node.insertBefore(page.find('#'+nodeSelected));
     } else {
         console.log('la mando abajo', page.find('#'+$(e.currentTarget).attr('id')));
-        let nodoFinal = page.find('#'+$(e.currentTarget).attr('id'));
+        let nodoFinal = page.find('#'+$(e.currentTarget).parent().parent().attr('id')+ ' .row .column');
         console.log(nodoFinal);
         nodoFinal.append(node);
     }

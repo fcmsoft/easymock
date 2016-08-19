@@ -161,7 +161,7 @@ body.builder {
 }
 
 .contenedor .row {
-  margin: 0;
+  margin: 10px 0;
 }
 /** properties panel **/
 .properties {
