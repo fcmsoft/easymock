@@ -234,7 +234,7 @@ Template.project.events({
     Meteor.call('updatePageContent', Session.get('currentProjectId'), Session.get('currentPage'), page.html());
   },
 
-  'drop .contenedor .row .column': function (e, tpl) { console.log('ENTRE A DROP container', $(e.currentTarget).parent().parent());
+  'drop .contenedor .row .column': function (e, tpl) {
     e.stopPropagation();
     var data = e.originalEvent.dataTransfer.getData('application/json');
     data = JSON.parse(data);
@@ -249,12 +249,12 @@ Template.project.events({
         containerNodes = $(e.currentTarget).children(),
         nodeSelected,
         nextId = $(e.currentTarget).children().length;
-
+        nodoOriginIdentyfyByClass = $(e.currentTarget).attr('class').split(' ');
+        nodoOriginIdentyfyByClass = nodoOriginIdentyfyByClass[2];
     e.preventDefault();
     //buscar el nodo anterior mas cercano
-    if (containerNodes.length > 2) {
-
-      containerNodes.each(function(){
+    if (containerNodes.length > 1) {
+      containerNodes.each(function(index){
         var nodePosY = getPosition(this).top;
         if (y > nodePosY) {
           nodeSelected = $(this).attr('id');
@@ -266,17 +266,15 @@ Template.project.events({
     } else {
         template = Widgets.findOne({name:data.name}).template;
     }
-    node.attr('id',$(e.currentTarget).parent().parent().attr('id')+'-'+(nextId+1));
+    node.attr('id',$(e.currentTarget).parent().parent().attr('id')+'-'+nodoOriginIdentyfyByClass+'-'+(nextId+1));
     node.html(template);
 
     if (nodeSelected) {
         console.log(page.find('#'+nodeSelected));
-        //page.find(nodeSelected).after(node);
         node.insertBefore(page.find('#'+nodeSelected));
     } else {
         console.log('la mando abajo', page.find('#'+$(e.currentTarget).attr('id')));
-        let nodoFinal = page.find('#'+$(e.currentTarget).parent().parent().attr('id')+ ' .row .column');
-        console.log(nodoFinal);
+        let nodoFinal = page.find('#'+$(e.currentTarget).parent().parent().attr('id')+ ' .row .' + nodoOriginIdentyfyByClass);
         nodoFinal.append(node);
     }
 

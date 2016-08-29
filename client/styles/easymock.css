@@ -157,7 +157,7 @@ body.builder {
 
 .contenedor .column {
   border: 1px dashed #ccc;
-  min-height: 40px;
+  min-height: 45px;
 }
 
 .contenedor .row {

@@ -12,7 +12,7 @@ Widgets.insert(
   {
     name: 'text',
     icon: 'flaticon-line22',
-    html: '<p>Text</p>',
+    template: '<p>Text</p>',
     text: 'Text',
     type: 1
   }
