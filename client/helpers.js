@@ -1,8 +1,8 @@
 
 Template.nav.helpers({
-  islogged: function () {
-      return Meteor.user();
-    }
+  isInProject: function() {
+    return (Meteor.user() !== null) && (Iron.Location.get().path.includes('project/'));
+  }
 });
 
 Template.viewProjects.helpers({

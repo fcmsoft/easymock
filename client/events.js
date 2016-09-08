@@ -48,6 +48,10 @@ Template.viewProjects.events({
 
 Template.project.events({
   'click .preview-button': function(e, tpl) {
+    $('.node.active').popover('destroy');
+    $('.node.active').removeClass('active');
+    $('.contenedor.active').popover('destroy');
+    $('.contenedor.active').removeClass('active');
     $('body').addClass('preview');
     $('.preview-button').hide();
     $('.edit-button').show();
@@ -121,21 +125,13 @@ Template.project.events({
     console.log('on dragstart for grid');
   },
 
-  'dragstart .node': function (e, tpl) {
-    var style = window.getComputedStyle(e.target, null);
-    var offset_dataX = (parseInt(style.getPropertyValue("left"),10) - e.originalEvent.clientX);
-    var offset_dataY = (parseInt(style.getPropertyValue("top"),10) - e.originalEvent.clientY);
+  'dragstart .node': function (e, tpl) { console.log('trata de hacer drag en node');
     var json_value = {
       name: $(e.originalEvent.target).attr('name'),
       origin: 'node',
-      _id: e.originalEvent.target.id,
-      offsetX: offset_dataX,
-      offsetY: offset_dataY
+      _id: e.originalEvent.target.id
     }
-    $('.node.active').popover('destroy');
-    $('.node.active').removeClass('active');
-    $(e.currentTarget).addClass('active');
-    Session.set('currentNode', e.originalEvent.target.id);
+    clearSelection();
     e.originalEvent.dataTransfer.setData("application/json", JSON.stringify(json_value));
     e.originalEvent.dataTransfer.effectAllowed = "move";
   },
@@ -147,48 +143,12 @@ Template.project.events({
   },
 
   'dragover .page': function (e, tpl) {
-    var x = e.originalEvent.clientX,
-        y = e.originalEvent.clientY;
     e.preventDefault();
-    //buscar el nodo anterior mas cercano
-    /*var pageNodes = tpl.$('.page').children();
-    var nodeSelected;
-    if (pageNodes.length > 2) {
-      pageNodes.each(function(id, node){
-        var nodePosY = getPosition(node).top;
-        console.log(y, nodePosY);
-        if (nodePosY < y) {
-          nodeSelected = node;
-          console.log('encontro UNO');
-        }
-      });
-      if (nodeSelected) {
-      /*  console.log(nodeSelected);
-        tpl.$(nodeSelected).after('<div class="insertPoint"></div>');
-        var data = e.originalEvent.dataTransfer.getData('application/json');
-        data = JSON.parse(data);*/
-    /*  }
-    }
-*/
+
   },
 
   'drop .page': function (e, tpl) { console.log('ENTRE A DROP page');
     e.stopPropagation();
-    /*
-      storeNode = {
-        name: data.name,
-        text: data.text,
-        posX: e.originalEvent.clientX,
-        posY: e.originalEvent.clientY,
-        color: '#000',
-        backgroundColor: '#FFF',
-        width: (data.type==1) ? '' : '100',
-        height: (data.type==1) ? '' : '50',
-        type: data.type,
-        border: (data.type==1) ? '' : '1px solid #000',
-        template: data.template
-      }
-*/
     var data = e.originalEvent.dataTransfer.getData('application/json');
     data = JSON.parse(data);
 
@@ -285,19 +245,14 @@ Template.project.events({
       // si hago clic en una parte de la pagina q no es un nodo, quiero des-seleccionar
       e.stopPropagation();
       console.log('clic on page');
-      $('.node.active').popover('destroy');
-      $('.node.active').removeClass('active');
-      Session.set("currentNode",'');
+      clearSelection();
   },
 
   'click .node': function (e, tpl) {
       e.stopPropagation();
-      $('.node.active').popover('destroy');
-      $('.node.active').removeClass('active');
+      clearSelection();
       $(e.currentTarget).addClass('active');
-      Session.set("currentNode", e.currentTarget.id );
-      let type = $('.node.active').attr('data-type');
-      console.log(type);
+
       var options = {
             title    : function(){
                 return $('.properties-title').html();
@@ -306,10 +261,9 @@ Template.project.events({
             html     : true,
             placement: 'auto bottom',
             content  : function(){
-                return (type==1 || type==2) ? $('.properties-content1-2').html() : $('.properties-content1-2').html();
+                return $('.properties-content1-2').html();
             }
-      },
-      node = Nodes.findOne({_id: Session.get('currentNode')});
+      };
 
       $('.node.active').popover(options)
         .popover('show')
@@ -318,14 +272,50 @@ Template.project.events({
               e.stopPropagation();
               $('.node.active').popover('destroy');
           });
-          $('.deleteNode').on('click', deleteNodeEvent);
-          $('.applyEditText').on('click', editNodeEvent);
+          $('.deleteNode').on('click', {id: $(e.currentTarget).attr('id')}, deleteNodeEvent);
+          $('.applyEditText').on('click',  {id: $(e.currentTarget).attr('id')}, editNodeEvent);
+          $('.editText').val( $(e.currentTarget).css('text'));
+          $('.editColor').val($(e.currentTarget).css('color'));
+          $('.editBorder').val($(e.currentTarget).css('border'));
+          $('.editBackgroundColor').val($(e.currentTarget).css('backgroundColor'));
+          $('.editWidth').val($(e.currentTarget).css('width'));
+          $('.editHeight').val($(e.currentTarget).css('height'));
+        });
+  },
+
+  'click .contenedor': function (e, tpl) {
+      e.stopPropagation();
+      clearSelection();
+      $(e.currentTarget).addClass('active');
+      var options = {
+            title    : function(){
+                return $('.properties-title').html();
+            },
+            container: 'body',
+            html     : true,
+            placement: 'auto bottom',
+            content  : function(){
+                return $('.properties-grid-content').html();
+            }
+      };
+      var contenedorActual = e.currentTarget;
+      console.log(contenedorActual);
+      $('.contenedor.active').popover(options)
+        .popover('show')
+        .on('shown.bs.popover', function () {
+          $('.close-properties').on('click', function(e){
+              e.stopPropagation();
+              $('.contenedor.active').popover('destroy');
+          });
+
+          $('.deleteContenedor').on('click', {contenedor: contenedorActual}, deleteContenedorEvent);
+      /*    $('.applyEditText').on('click', editNodeEvent);
           $('.editText').val(node.text);
           $('.editColor').val(node.color);
           $('.editBorder').val(node.border);
           $('.editBackgroundColor').val(node.backgroundColor);
           $('.editWidth').val(node.width);
-          $('.editHeight').val(node.height);
+          $('.editHeight').val(node.height);*/
         });
   },
 });
@@ -338,31 +328,48 @@ var getPosition = function(el) {
   }
 };
 
-var deleteNodeEvent = function() {
+var deleteNodeEvent = function(e) {
+    var page = $('.page').clone(),
+        id = e.data.id;
     $('.node.active').popover('destroy');
-    console.log('Borrando nodeId:', Session.get("currentNode"));
-    if (Session.get('currentNode').length) {
-        Meteor.call('removeNode', Session.get('currentProjectId'), Session.get("currentNode"));
-        Session.set("currentNode",'');
-    }
+    page.find('#'+id).remove();
+    Meteor.call('updatePageContent', Session.get('currentProjectId'), Session.get('currentPage'), page.html());
 };
 
-var editNodeEvent = function(text) {
-    console.log('Edit text nodeId:', Session.get("currentNode"));
-    var page = Pages.findOne({_id:Session.get("currentPage")});
-    var storeNode = {};
-    storeNode._id = Session.get("currentNode");
-    storeNode.text = $('.popover .editText').val();
-    storeNode.color = $('.popover .editColor').val();
-    storeNode.backgroundColor = $('.popover .editBackgroundColor').val();
-    storeNode.width = $('.popover .editWidth').val();
-    storeNode.height = $('.popover .editHeight').val();
-    storeNode.border = $('.popover .editBorder').val();
+var deleteContenedorEvent = function(e) {
+    var page = $('.page').clone(),
+        id=$(e.data.contenedor).attr('id');
+    $('.contenedor.active').popover('destroy');
+    console.log('Borrando contenedor:', e.data.contenedor, id);
+    page.find('#'+id).remove();
+    Meteor.call('updatePageContent', Session.get('currentProjectId'), Session.get('currentPage'), page.html());
+};
+
+var editNodeEvent = function(e) {
+    var page = $('.page').clone(),
+        id = e.data.id,
+        node = page.find('#'+id),
+        styles = {
+          'color': $('.popover .editColor').val(),
+          'background-color': $('.popover .editBackgroundColor').val(),
+          'width': $('.popover .editWidth').val(),
+          'height': $('.popover .editHeight').val(),
+          'border': $('.popover .editBorder').val()
+        };
+
+    node.css(styles);
+    console.log(id,node);
     // IMPORTANTE
     //verificar q no guarde sin texto los q son de texto o sin tamaño etc
-    Meteor.call('updateNode', Session.get('currentProjectId'), storeNode);
+    Meteor.call('updatePageContent', Session.get('currentProjectId'), Session.get('currentPage'), page.html());
     $('.node.active').popover('destroy');
+};
 
+var clearSelection = function(){
+  $('.node.active').popover('destroy');
+  $('.node.active').removeClass('active');
+  $('.contenedor.active').popover('destroy');
+  $('.contenedor.active').removeClass('active');
 };
 
 Template.eachPageInList.events({

@@ -4,8 +4,10 @@
             <a class="navbar-brand" href="/">Easy Mock</a>
         </div>
         <div class="navbar-collapse collapse">
-					<input class="btn btn-default btn-sm preview-button" type="button" value="Preview (o Run)">
-					<input class="btn btn-default btn-sm edit-button" type="button" value="Edit">
+					{{#if isInProject}}
+						<input class="btn btn-default btn-sm preview-button" type="button" value="Preview (o Run)">
+						<input class="btn btn-default btn-sm edit-button" type="button" value="Edit">
+					{{/if}}
             <ul class="nav navbar-nav navbar-right">
                 {{> loginButtons}}
             </ul>
