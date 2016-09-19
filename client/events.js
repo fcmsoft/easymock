@@ -274,7 +274,7 @@ Template.project.events({
           });
           $('.deleteNode').on('click', {id: $(e.currentTarget).attr('id')}, deleteNodeEvent);
           $('.applyEditText').on('click',  {id: $(e.currentTarget).attr('id')}, editNodeEvent);
-          $('.editText').val( $(e.currentTarget).css('text'));
+          $('.editText').val( $(e.currentTarget).text());
           $('.editColor').val($(e.currentTarget).css('color'));
           $('.editBorder').val($(e.currentTarget).css('border'));
           $('.editBackgroundColor').val($(e.currentTarget).css('backgroundColor'));
@@ -357,8 +357,12 @@ var editNodeEvent = function(e) {
           'border': $('.popover .editBorder').val()
         };
 
+    if ( $('.popover .editText').val().length > 0) {
+      node.html(node.html().replace(node.text(), $('.popover .editText').val()));
+    }
+
     node.css(styles);
-    console.log(id,node);
+
     // IMPORTANTE
     //verificar q no guarde sin texto los q son de texto o sin tamaño etc
     Meteor.call('updatePageContent', Session.get('currentProjectId'), Session.get('currentPage'), page.html());

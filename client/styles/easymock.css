@@ -151,6 +151,9 @@ body.builder {
     border: 1px dotted red;
 }
 
+.preview .node.active ,.preview .contenedor.active {
+    border: none;
+}
 .insertPoint {
   border: 1px dashed red;
 }
@@ -160,6 +163,9 @@ body.builder {
   min-height: 45px;
 }
 
+.preview .contenedor .column {
+  border: none;
+}
 .contenedor .row {
   margin: 10px 0;
 }
