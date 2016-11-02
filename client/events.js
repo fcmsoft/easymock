@@ -152,45 +152,29 @@ Template.project.events({
     var data = e.originalEvent.dataTransfer.getData('application/json');
     data = JSON.parse(data);
 
-    var node = $("<div/>", {
-          class: (data.origin=='widget') ? 'node' : 'contenedor',
-          }),
+    var node,
         page = tpl.$('.page').clone(),
-        template = '',
-        x = e.originalEvent.clientX,
-        y = e.originalEvent.clientY,
-        pageNodes = tpl.$('.page').children(),
+        //x = e.originalEvent.clientX,
+        //y = e.originalEvent.clientY,
         nodeSelected,
         nextId = tpl.$('.page').children().length;
 
     e.preventDefault();
+
+    //creo nuevo nodo
+    node = createNode(data, nextId+1);
+
     //buscar el nodo anterior mas cercano
-    if (pageNodes.length > 2) {
-      pageNodes.each(function(){
-        var nodePosY = getPosition(this).top;
-        if (y > nodePosY) {
-          nodeSelected = $(this).attr('id');
-        }
-      });
-    }
-    if (data.origin == 'grid') {
-        template = Grid.findOne({name:data.name}).template;
-    } else {
-        template = Widgets.findOne({name:data.name}).template;
-    }
-    node.attr('id',nextId+1);
-    node.html(template);
+    nodeSelected = getPreviousNode(tpl.$('.page').children(), e.originalEvent.clientY);
 
     if (nodeSelected) {
         console.log(page.find('#'+nodeSelected));
-        //page.find(nodeSelected).after(node);
         node.insertBefore(page.find('#'+nodeSelected));
     } else {
         console.log('la mando abajo');
         page.append(node);
     }
 
-      //console.log(tpl.$('.page').html());
     Meteor.call('updatePageContent', Session.get('currentProjectId'), Session.get('currentPage'), page.html());
   },
 
@@ -199,35 +183,22 @@ Template.project.events({
     var data = e.originalEvent.dataTransfer.getData('application/json');
     data = JSON.parse(data);
 
-    var node = $("<div/>", {
-          class: (data.origin=='widget') ? 'node' : 'contenedor',
-          }),
+    var node,
         page = tpl.$('.page').clone(),
-        template = '',
-        x = e.originalEvent.clientX,
-        y = e.originalEvent.clientY,
-        containerNodes = $(e.currentTarget).children(),
+        //x = e.originalEvent.clientX,
+        //y = e.originalEvent.clientY,
         nodeSelected,
         nextId = $(e.currentTarget).children().length;
         nodoOriginIdentyfyByClass = $(e.currentTarget).attr('class').split(' ');
         nodoOriginIdentyfyByClass = nodoOriginIdentyfyByClass[2];
+
     e.preventDefault();
+
+    //creo nuevo nodo
+    node = createNode(data, $(e.currentTarget).parent().parent().attr('id')+'-'+nodoOriginIdentyfyByClass+'-'+(nextId+1));
+
     //buscar el nodo anterior mas cercano
-    if (containerNodes.length > 1) {
-      containerNodes.each(function(index){
-        var nodePosY = getPosition(this).top;
-        if (y > nodePosY) {
-          nodeSelected = $(this).attr('id');
-        }
-      });
-    }
-    if (data.origin == 'grid') {
-        template = Grid.findOne({name:data.name}).template;
-    } else {
-        template = Widgets.findOne({name:data.name}).template;
-    }
-    node.attr('id',$(e.currentTarget).parent().parent().attr('id')+'-'+nodoOriginIdentyfyByClass+'-'+(nextId+1));
-    node.html(template);
+    nodeSelected = getPreviousNode($(e.currentTarget).children(), e.originalEvent.clientY);
 
     if (nodeSelected) {
         console.log(page.find('#'+nodeSelected));
@@ -244,7 +215,6 @@ Template.project.events({
   'click .page': function (e, tpl){
       // si hago clic en una parte de la pagina q no es un nodo, quiero des-seleccionar
       e.stopPropagation();
-      console.log('clic on page');
       clearSelection();
   },
 
@@ -263,7 +233,10 @@ Template.project.events({
             content  : function(){
                 return $('.properties-content1-2').html();
             }
-      };
+          },
+          type = $('.node.active').attr('data-type'),
+          styles = Widgets.findOne({name:type}).styles;
+console.log(styles);
 
       $('.node.active').popover(options)
         .popover('show')
@@ -274,6 +247,9 @@ Template.project.events({
           });
           $('.deleteNode').on('click', {id: $(e.currentTarget).attr('id')}, deleteNodeEvent);
           $('.applyEditText').on('click',  {id: $(e.currentTarget).attr('id')}, editNodeEvent);
+
+          //iterar sobre todos los styles del widget
+
           $('.editText').val( $(e.currentTarget).text());
           $('.editColor').val($(e.currentTarget).css('color'));
           $('.editBorder').val($(e.currentTarget).css('border'));
@@ -319,6 +295,39 @@ Template.project.events({
         });
   },
 });
+
+/*
+* Create a new node to insert in page
+*/
+var createNode = function(data, nodeId) {
+  var node = $("<div/>", {
+      class: (data.origin=='widget') ? 'node' : 'contenedor',
+  }),
+      template = '';
+  if (data.origin == 'grid') {
+      template = Grid.findOne({name:data.name}).template;
+  } else {
+      template = Widgets.findOne({name:data.name}).template;
+  }
+  node.attr('id',nodeId);
+  node.attr('data-type',data.name);
+  node.html(template);
+  return node;
+}
+
+var getPreviousNode = function(nodes, y) {
+  var nodeSelected;
+  //buscar el nodo anterior mas cercano
+  if (nodes.length > 1) {
+    nodes.each(function(){
+      var nodePosY = getPosition(this).top;
+      if (y > nodePosY) {
+        nodeSelected = $(this).attr('id');
+      }
+    });
+    return nodeSelected;
+  }
+}
 
 var getPosition = function(el) {
   el = el.getBoundingClientRect();
