@@ -222,6 +222,21 @@ Template.project.events({
       e.stopPropagation();
       clearSelection();
       $(e.currentTarget).addClass('active');
+      tpl.data = {
+        'styles': [{name: 'test'}]
+      };
+
+      var widget = Widgets.findOne({name:$(e.currentTarget).attr('data-name')});
+          propertiesList =widget.styles,
+          propertiesHtml = '';
+          for (var i=0; i<propertiesList.length; i++){
+            propertiesHtml += '<div class="form-group properties-form-group"><label for="edit-'+propertiesList[i].name+'">'+propertiesList[i].name+'</label><input type="text" value="" class="edit-'+propertiesList[i].name+'"></div>';
+          }
+      $('#properties-form').html('');
+      $('#properties-form').append(propertiesHtml);
+      if (widget.includeText) {
+        $('#properties-form').before('<div class="form-group properties-form-group"><label for="edit-text">Texto</label><input type="text" value="" class="edit-text"></div>');
+      }
 
       var options = {
             title    : function(){
@@ -230,7 +245,7 @@ Template.project.events({
             container: 'body',
             html     : true,
             placement: 'auto bottom',
-            content  : function(){
+            content  : function() {
                 return $('.properties-content1-2').html();
             }
           },
@@ -241,7 +256,7 @@ console.log(styles);
       $('.node.active').popover(options)
         .popover('show')
         .on('shown.bs.popover', function () {
-          $('.close-properties').on('click', function(e){
+          $('.close-properties').on('click', function(e) {
               e.stopPropagation();
               $('.node.active').popover('destroy');
           });

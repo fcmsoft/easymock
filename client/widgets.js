@@ -31,7 +31,8 @@ Widgets.insert(
         inputClass: 'editBorderColor',
         label: 'Border Color',
       }
-    ]
+    ],
+    includeText: true
   }
 );
 Widgets.insert(
@@ -66,7 +67,8 @@ Widgets.insert(
         inputClass: 'editBorderColor',
         label: 'Border Color',
       }
-    ]
+    ],
+    includeText: true
   }
 );
 Widgets.insert(
@@ -101,8 +103,9 @@ Widgets.insert(
         inputClass: 'editBorderColor',
         label: 'Border Color',
       }
-    ]
-  }
+    ],
+    includeText: true
+    }
 );
 Widgets.insert(
   {
@@ -136,8 +139,9 @@ Widgets.insert(
         inputClass: 'editBorderColor',
         label: 'Border Color',
       }
-    ]
-  }
+    ],
+    includeText: true
+    }
 );
 Widgets.insert(
   {
@@ -171,8 +175,9 @@ Widgets.insert(
         inputClass: 'editBorderColor',
         label: 'Border Color',
       }
-    ]
-  }
+    ],
+    includeText: true
+    }
 );
 
 Widgets.insert(
@@ -207,6 +212,7 @@ Widgets.insert(
         inputClass: 'editBorderColor',
         label: 'Border Color',
       }
-    ]
-  }
+    ],
+    includeText: true
+    }
 );
