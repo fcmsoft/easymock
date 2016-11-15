@@ -5,7 +5,14 @@ Widgets.insert(
     icon: 'flaticon-tool7',
     template: '<a class="btn btn-default" >Button</a>',
     text: 'Button',
-    styles: ['color', 'background-color', 'height', 'width', 'border-color']
+    includeText: true,
+    styles:  [
+      {name: 'color'},
+      {name: 'background-color'},
+      {name: 'height'},
+      {name: 'width'},
+      {name: 'border-color'}
+    ]
   }
 );
 Widgets.insert(
@@ -14,7 +21,14 @@ Widgets.insert(
     icon: 'flaticon-line22',
     template: '<p>Text</p>',
     text: 'Text',
-    styles: ['color', 'background-color', 'height', 'width', 'border-color']
+    includeText: true,
+    styles:  [
+      {name: 'color'},
+      {name: 'background-color'},
+      {name: 'height'},
+      {name: 'width'},
+      {name: 'border-color'}
+    ]
   }
 );
 Widgets.insert(
@@ -23,7 +37,14 @@ Widgets.insert(
     icon: 'flaticon-text69',
     template: '<input type="text" value="input">',
     text: 'Input',
-    styles: ['color', 'background-color', 'height', 'width', 'border-color']
+    includeText: true,
+    styles:  [
+      {name: 'color'},
+      {name: 'background-color'},
+      {name: 'height'},
+      {name: 'width'},
+      {name: 'border-color'}
+    ]
   }
 );
 Widgets.insert(
@@ -32,7 +53,14 @@ Widgets.insert(
     icon: 'flaticon-font13',
     template: '<h1>Titulo</h1>',
     text: 'Título',
-    styles: ['color', 'background-color', 'height', 'width', 'border-color']
+    includeText: true,
+    styles:  [
+      {name: 'color'},
+      {name: 'background-color'},
+      {name: 'height'},
+      {name: 'width'},
+      {name: 'border-color'}
+    ]
   }
 );
 Widgets.insert(
@@ -41,7 +69,14 @@ Widgets.insert(
     icon: 'flaticon-font13',
     template: '<h2>Titulo2</h2>',
     text: 'Título2',
-    styles: ['color', 'background-color', 'height', 'width', 'border-color']
+    includeText: true,
+    styles: [
+      {name: 'color'},
+      {name: 'background-color'},
+      {name: 'height'},
+      {name: 'width'},
+      {name: 'border-color'}
+    ]
   }
 );
 
@@ -51,6 +86,13 @@ Widgets.insert(
     icon: 'flaticon-drop10',
     template: '<select><option value="opcion1">Opcion 1</option></select>',
     text: '',
-    styles: ['color', 'background-color', 'height', 'width', 'border-color']
+    includeText: false,
+    styles: [
+      {name: 'color'},
+      {name: 'background-color'},
+      {name: 'height'},
+      {name: 'width'},
+      {name: 'border-color'}
+    ]
   }
 );

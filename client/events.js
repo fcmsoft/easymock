@@ -179,6 +179,7 @@ Template.project.events({
         template = Widgets.findOne({name:data.name}).template;
     }
     node.attr('id',nextId+1);
+    node.attr('data-name', data.name);
     node.html(template);
 
     if (nodeSelected) {
@@ -227,6 +228,7 @@ Template.project.events({
         template = Widgets.findOne({name:data.name}).template;
     }
     node.attr('id',$(e.currentTarget).parent().parent().attr('id')+'-'+nodoOriginIdentyfyByClass+'-'+(nextId+1));
+    node.attr('data-name', data.name);
     node.html(template);
 
     if (nodeSelected) {
@@ -252,6 +254,21 @@ Template.project.events({
       e.stopPropagation();
       clearSelection();
       $(e.currentTarget).addClass('active');
+      tpl.data = {
+        'styles': [{name: 'test'}]
+      };
+
+      var widget = Widgets.findOne({name:$(e.currentTarget).attr('data-name')});
+          propertiesList =widget.styles,
+          propertiesHtml = '';
+          for (var i=0; i<propertiesList.length; i++){
+            propertiesHtml += '<div class="form-group properties-form-group"><label for="edit-'+propertiesList[i].name+'">'+propertiesList[i].name+'</label><input type="text" value="" class="edit-'+propertiesList[i].name+'"></div>';
+          }
+      $('#properties-form').html('');
+      $('#properties-form').append(propertiesHtml);
+      if (widget.includeText) {
+        $('#properties-form').before('<div class="form-group properties-form-group"><label for="edit-text">Texto</label><input type="text" value="" class="edit-text"></div>');
+      }
 
       var options = {
             title    : function(){
@@ -260,7 +277,7 @@ Template.project.events({
             container: 'body',
             html     : true,
             placement: 'auto bottom',
-            content  : function(){
+            content  : function() {
                 return $('.properties-content1-2').html();
             }
       };
@@ -268,7 +285,7 @@ Template.project.events({
       $('.node.active').popover(options)
         .popover('show')
         .on('shown.bs.popover', function () {
-          $('.close-properties').on('click', function(e){
+          $('.close-properties').on('click', function(e) {
               e.stopPropagation();
               $('.node.active').popover('destroy');
           });
