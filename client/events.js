@@ -222,36 +222,33 @@ Template.project.events({
       e.stopPropagation();
       clearSelection();
       $(e.currentTarget).addClass('active');
-      tpl.data = {
-        'styles': [{name: 'test'}]
-      };
 
-      var widget = Widgets.findOne({name:$(e.currentTarget).attr('data-name')});
-          propertiesList =widget.styles,
-          propertiesHtml = '';
-          for (var i=0; i<propertiesList.length; i++){
-            propertiesHtml += '<div class="form-group properties-form-group"><label for="edit-'+propertiesList[i].name+'">'+propertiesList[i].name+'</label><input type="text" value="" class="edit-'+propertiesList[i].name+'"></div>';
-          }
+      let type = $('.node.active').attr('data-type'),
+          widget = Widgets.findOne({name : type}),
+          propertiesList = widget.styles,
+          propertiesHtml = '',
+          options = {
+                title    : function(){
+                    return $('.properties-title').html();
+                },
+                container: 'body',
+                html     : true,
+                placement: 'auto bottom',
+                content  : function() {
+                    return $('.properties-content').html();
+                }
+              };
+
+      propertiesList.forEach(function(prop){
+        let value = $(e.currentTarget).css(prop.name);
+        propertiesHtml += `<div class="form-group properties-form-group"><label for="edit-${prop.name}">
+          ${prop.name}</label><input type="text" value="${value}" class="form-control ${prop.inputClass}"></div>`;
+      });
       $('#properties-form').html('');
       $('#properties-form').append(propertiesHtml);
       if (widget.includeText) {
-        $('#properties-form').before('<div class="form-group properties-form-group"><label for="edit-text">Texto</label><input type="text" value="" class="edit-text"></div>');
+        $('#properties-form').prepend('<div class="form-group properties-form-group"><label for="editText">Texto</label><input type="text" value="" name="editText" class="editText form-control"></div>');
       }
-
-      var options = {
-            title    : function(){
-                return $('.properties-title').html();
-            },
-            container: 'body',
-            html     : true,
-            placement: 'auto bottom',
-            content  : function() {
-                return $('.properties-content1-2').html();
-            }
-          },
-          type = $('.node.active').attr('data-type'),
-          styles = Widgets.findOne({name:type}).styles;
-console.log(styles);
 
       $('.node.active').popover(options)
         .popover('show')
@@ -262,15 +259,11 @@ console.log(styles);
           });
           $('.deleteNode').on('click', {id: $(e.currentTarget).attr('id')}, deleteNodeEvent);
           $('.applyEditText').on('click',  {id: $(e.currentTarget).attr('id')}, editNodeEvent);
-
-          //iterar sobre todos los styles del widget
-
+          $('#properties-tabs a').click(function (e) {
+            e.preventDefault(); console.log($(this));
+            $(this).tab('show');
+          });
           $('.editText').val( $(e.currentTarget).text());
-          $('.editColor').val($(e.currentTarget).css('color'));
-          $('.editBorder').val($(e.currentTarget).css('border'));
-          $('.editBackgroundColor').val($(e.currentTarget).css('backgroundColor'));
-          $('.editWidth').val($(e.currentTarget).css('width'));
-          $('.editHeight').val($(e.currentTarget).css('height'));
         });
   },
 
@@ -300,13 +293,6 @@ console.log(styles);
           });
 
           $('.deleteContenedor').on('click', {contenedor: contenedorActual}, deleteContenedorEvent);
-      /*    $('.applyEditText').on('click', editNodeEvent);
-          $('.editText').val(node.text);
-          $('.editColor').val(node.color);
-          $('.editBorder').val(node.border);
-          $('.editBackgroundColor').val(node.backgroundColor);
-          $('.editWidth').val(node.width);
-          $('.editHeight').val(node.height);*/
         });
   },
 });
@@ -373,14 +359,14 @@ var editNodeEvent = function(e) {
     var page = $('.page').clone(),
         id = e.data.id,
         node = page.find('#'+id),
-        styles = {
-          'color': $('.popover .editColor').val(),
-          'background-color': $('.popover .editBackgroundColor').val(),
-          'width': $('.popover .editWidth').val(),
-          'height': $('.popover .editHeight').val(),
-          'border': $('.popover .editBorder').val()
-        };
+        type = node.attr('data-type'),
+        widget = Widgets.findOne({name : type}),
+        propertiesList = widget.styles,
+        styles = {};
 
+    propertiesList.forEach(function(prop) {
+      styles[prop.name] = $('.popover .' + prop.inputClass).val();
+    });
     if ( $('.popover .editText').val().length > 0) {
       node.html(node.html().replace(node.text(), $('.popover .editText').val()));
     }

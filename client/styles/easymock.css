@@ -132,6 +132,10 @@ body.builder {
     max-width: 500px;
 }
 
+.form-control {
+    margin-left: 5px;
+}
+
 .editText {
     width: 300px;
 }

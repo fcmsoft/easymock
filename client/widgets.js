@@ -27,9 +27,9 @@ Widgets.insert(
         label: 'Width',
       },
       {
-        name: 'border-color',
-        inputClass: 'editBorderColor',
-        label: 'Border Color',
+        name: 'border',
+        inputClass: 'editBorder',
+        label: 'Border',
       }
     ],
     includeText: true
@@ -63,9 +63,9 @@ Widgets.insert(
         label: 'Width',
       },
       {
-        name: 'border-color',
-        inputClass: 'editBorderColor',
-        label: 'Border Color',
+        name: 'border',
+        inputClass: 'editBorder',
+        label: 'Border',
       }
     ],
     includeText: true
@@ -99,9 +99,9 @@ Widgets.insert(
         label: 'Width',
       },
       {
-        name: 'border-color',
-        inputClass: 'editBorderColor',
-        label: 'Border Color',
+        name: 'border',
+        inputClass: 'editBorder',
+        label: 'Border',
       }
     ],
     includeText: true
@@ -135,9 +135,9 @@ Widgets.insert(
         label: 'Width',
       },
       {
-        name: 'border-color',
-        inputClass: 'editBorderColor',
-        label: 'Border Color',
+        name: 'border',
+        inputClass: 'editBorder',
+        label: 'Border',
       }
     ],
     includeText: true
@@ -171,9 +171,9 @@ Widgets.insert(
         label: 'Width',
       },
       {
-        name: 'border-color',
-        inputClass: 'editBorderColor',
-        label: 'Border Color',
+        name: 'border',
+        inputClass: 'editBorder',
+        label: 'Border',
       }
     ],
     includeText: true
@@ -208,9 +208,9 @@ Widgets.insert(
         label: 'Width',
       },
       {
-        name: 'border-color',
-        inputClass: 'editBorderColor',
-        label: 'Border Color',
+        name: 'border',
+        inputClass: 'editBorder',
+        label: 'Border',
       }
     ],
     includeText: true
