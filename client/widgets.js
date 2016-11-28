@@ -5,14 +5,34 @@ Widgets.insert(
     icon: 'flaticon-tool7',
     template: '<a class="btn btn-default" >Button</a>',
     text: 'Button',
-    includeText: true,
-    styles:  [
-      {name: 'color'},
-      {name: 'background-color'},
-      {name: 'height'},
-      {name: 'width'},
-      {name: 'border-color'}
-    ]
+    styles: [
+      {
+        name: 'color',
+        inputClass: 'editColor',
+        label: 'Color',
+      },
+      {
+        name: 'background-color',
+        inputClass: 'editBackgroundColor',
+        label: 'Background Color',
+      },
+      {
+        name: 'height',
+        inputClass: 'editHeight',
+        label: 'Height',
+      },
+      {
+        name: 'width',
+        inputClass: 'editWidth',
+        label: 'Width',
+      },
+      {
+        name: 'border-color',
+        inputClass: 'editBorderColor',
+        label: 'Border Color',
+      }
+    ],
+    includeText: true
   }
 );
 Widgets.insert(
@@ -21,14 +41,34 @@ Widgets.insert(
     icon: 'flaticon-line22',
     template: '<p>Text</p>',
     text: 'Text',
-    includeText: true,
-    styles:  [
-      {name: 'color'},
-      {name: 'background-color'},
-      {name: 'height'},
-      {name: 'width'},
-      {name: 'border-color'}
-    ]
+    styles: [
+      {
+        name: 'color',
+        inputClass: 'editColor',
+        label: 'Color',
+      },
+      {
+        name: 'background-color',
+        inputClass: 'editBackgroundColor',
+        label: 'Background Color',
+      },
+      {
+        name: 'height',
+        inputClass: 'editHeight',
+        label: 'Height',
+      },
+      {
+        name: 'width',
+        inputClass: 'editWidth',
+        label: 'Width',
+      },
+      {
+        name: 'border-color',
+        inputClass: 'editBorderColor',
+        label: 'Border Color',
+      }
+    ],
+    includeText: true
   }
 );
 Widgets.insert(
@@ -37,15 +77,35 @@ Widgets.insert(
     icon: 'flaticon-text69',
     template: '<input type="text" value="input">',
     text: 'Input',
-    includeText: true,
-    styles:  [
-      {name: 'color'},
-      {name: 'background-color'},
-      {name: 'height'},
-      {name: 'width'},
-      {name: 'border-color'}
-    ]
-  }
+    styles: [
+      {
+        name: 'color',
+        inputClass: 'editColor',
+        label: 'Color',
+      },
+      {
+        name: 'background-color',
+        inputClass: 'editBackgroundColor',
+        label: 'Background Color',
+      },
+      {
+        name: 'height',
+        inputClass: 'editHeight',
+        label: 'Height',
+      },
+      {
+        name: 'width',
+        inputClass: 'editWidth',
+        label: 'Width',
+      },
+      {
+        name: 'border-color',
+        inputClass: 'editBorderColor',
+        label: 'Border Color',
+      }
+    ],
+    includeText: true
+    }
 );
 Widgets.insert(
   {
@@ -53,15 +113,35 @@ Widgets.insert(
     icon: 'flaticon-font13',
     template: '<h1>Titulo</h1>',
     text: 'Título',
-    includeText: true,
-    styles:  [
-      {name: 'color'},
-      {name: 'background-color'},
-      {name: 'height'},
-      {name: 'width'},
-      {name: 'border-color'}
-    ]
-  }
+    styles: [
+      {
+        name: 'color',
+        inputClass: 'editColor',
+        label: 'Color',
+      },
+      {
+        name: 'background-color',
+        inputClass: 'editBackgroundColor',
+        label: 'Background Color',
+      },
+      {
+        name: 'height',
+        inputClass: 'editHeight',
+        label: 'Height',
+      },
+      {
+        name: 'width',
+        inputClass: 'editWidth',
+        label: 'Width',
+      },
+      {
+        name: 'border-color',
+        inputClass: 'editBorderColor',
+        label: 'Border Color',
+      }
+    ],
+    includeText: true
+    }
 );
 Widgets.insert(
   {
@@ -69,15 +149,35 @@ Widgets.insert(
     icon: 'flaticon-font13',
     template: '<h2>Titulo2</h2>',
     text: 'Título2',
-    includeText: true,
     styles: [
-      {name: 'color'},
-      {name: 'background-color'},
-      {name: 'height'},
-      {name: 'width'},
-      {name: 'border-color'}
-    ]
-  }
+      {
+        name: 'color',
+        inputClass: 'editColor',
+        label: 'Color',
+      },
+      {
+        name: 'background-color',
+        inputClass: 'editBackgroundColor',
+        label: 'Background Color',
+      },
+      {
+        name: 'height',
+        inputClass: 'editHeight',
+        label: 'Height',
+      },
+      {
+        name: 'width',
+        inputClass: 'editWidth',
+        label: 'Width',
+      },
+      {
+        name: 'border-color',
+        inputClass: 'editBorderColor',
+        label: 'Border Color',
+      }
+    ],
+    includeText: true
+    }
 );
 
 Widgets.insert(
@@ -86,13 +186,33 @@ Widgets.insert(
     icon: 'flaticon-drop10',
     template: '<select><option value="opcion1">Opcion 1</option></select>',
     text: '',
-    includeText: false,
     styles: [
-      {name: 'color'},
-      {name: 'background-color'},
-      {name: 'height'},
-      {name: 'width'},
-      {name: 'border-color'}
-    ]
-  }
+      {
+        name: 'color',
+        inputClass: 'editColor',
+        label: 'Color',
+      },
+      {
+        name: 'background-color',
+        inputClass: 'editBackgroundColor',
+        label: 'Background Color',
+      },
+      {
+        name: 'height',
+        inputClass: 'editHeight',
+        label: 'Height',
+      },
+      {
+        name: 'width',
+        inputClass: 'editWidth',
+        label: 'Width',
+      },
+      {
+        name: 'border-color',
+        inputClass: 'editBorderColor',
+        label: 'Border Color',
+      }
+    ],
+    includeText: true
+    }
 );
