@@ -30,6 +30,11 @@ Widgets.insert(
         name: 'border',
         inputClass: 'editBorder',
         label: 'Border',
+      },
+      {
+        name: 'padding',
+        inputClass: 'editPadding',
+        label: 'Padding',
       }
     ],
     includeText: true
@@ -66,6 +71,11 @@ Widgets.insert(
         name: 'border',
         inputClass: 'editBorder',
         label: 'Border',
+      },
+      {
+        name: 'padding',
+        inputClass: 'editPadding',
+        label: 'Padding',
       }
     ],
     includeText: true
@@ -102,6 +112,11 @@ Widgets.insert(
         name: 'border',
         inputClass: 'editBorder',
         label: 'Border',
+      },
+      {
+        name: 'padding',
+        inputClass: 'editPadding',
+        label: 'Padding',
       }
     ],
     includeText: true
@@ -138,6 +153,11 @@ Widgets.insert(
         name: 'border',
         inputClass: 'editBorder',
         label: 'Border',
+      },
+      {
+        name: 'padding',
+        inputClass: 'editPadding',
+        label: 'Padding',
       }
     ],
     includeText: true
@@ -174,6 +194,11 @@ Widgets.insert(
         name: 'border',
         inputClass: 'editBorder',
         label: 'Border',
+      },
+      {
+        name: 'padding',
+        inputClass: 'editPadding',
+        label: 'Padding',
       }
     ],
     includeText: true

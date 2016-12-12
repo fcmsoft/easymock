@@ -105,10 +105,7 @@ Template.project.events({
   'dragstart .widget': function (e, tpl) {
     var json_value = {
       name: this.name,
-      text: this.text,
-      origin: 'widget',
-      type: this.type,
-      template: this.template
+      origin: 'widget'
     }
     e.originalEvent.dataTransfer.setData("application/json", JSON.stringify(json_value));
     e.originalEvent.dataTransfer.effectAllowed = "copy";
@@ -125,14 +122,15 @@ Template.project.events({
     console.log('on dragstart for grid');
   },
 
-  'dragstart .node': function (e, tpl) { console.log('trata de hacer drag en node');
+  'dragstart .node': function (e, tpl) {
     var json_value = {
-      name: $(e.originalEvent.target).attr('name'),
-      origin: 'node',
-      _id: e.originalEvent.target.id
+      name: $(e.currentTarget).attr('data-type'),
+      origin: 'node'
     }
     clearSelection();
+    console.log(json_value);
     e.originalEvent.dataTransfer.setData("application/json", JSON.stringify(json_value));
+    console.log('on dragstart for node');
     e.originalEvent.dataTransfer.effectAllowed = "move";
   },
 
@@ -151,19 +149,20 @@ Template.project.events({
     e.stopPropagation();
     var data = e.originalEvent.dataTransfer.getData('application/json');
     data = JSON.parse(data);
-
     var node,
         page = tpl.$('.page').clone(),
-        //x = e.originalEvent.clientX,
-        //y = e.originalEvent.clientY,
         nodeSelected,
         nextId = tpl.$('.page').children().length;
 
     e.preventDefault();
 
-    //creo nuevo nodo
-    node = createNode(data, nextId+1);
+    if (data.origin === 'node') {
 
+    } else
+    {
+      //creo nuevo nodo
+      node = createNode(data, nextId+1);
+    }
     //buscar el nodo anterior mas cercano
     nodeSelected = getPreviousNode(tpl.$('.page').children(), e.originalEvent.clientY);
 
@@ -185,8 +184,6 @@ Template.project.events({
 
     var node,
         page = tpl.$('.page').clone(),
-        //x = e.originalEvent.clientX,
-        //y = e.originalEvent.clientY,
         nodeSelected,
         nextId = $(e.currentTarget).children().length;
         nodoOriginIdentyfyByClass = $(e.currentTarget).attr('class').split(' ');
@@ -233,14 +230,14 @@ Template.project.events({
                 },
                 container: 'body',
                 html     : true,
-                placement: 'auto bottom',
+                placement: 'bottom',
                 content  : function() {
                     return $('.properties-content').html();
                 }
               };
 
       propertiesList.forEach(function(prop){
-        let value = $(e.currentTarget).css(prop.name);
+        let value = $(e.currentTarget).children().css(prop.name);
         propertiesHtml += `<div class="form-group properties-form-group"><label for="edit-${prop.name}">
           ${prop.name}</label><input type="text" value="${value}" class="form-control ${prop.inputClass}"></div>`;
       });
@@ -249,7 +246,7 @@ Template.project.events({
       if (widget.includeText) {
         $('#properties-form').prepend('<div class="form-group properties-form-group"><label for="editText">Texto</label><input type="text" value="" name="editText" class="editText form-control"></div>');
       }
-
+      
       $('.node.active').popover(options)
         .popover('show')
         .on('shown.bs.popover', function () {
@@ -259,9 +256,11 @@ Template.project.events({
           });
           $('.deleteNode').on('click', {id: $(e.currentTarget).attr('id')}, deleteNodeEvent);
           $('.applyEditText').on('click',  {id: $(e.currentTarget).attr('id')}, editNodeEvent);
-          $('#properties-tabs a').click(function (e) {
-            e.preventDefault(); console.log($(this));
-            $(this).tab('show');
+          // hago esto manualmente en vez de usar .tab() porque tengo los id en la plantilla y rompen
+          $('.popover #properties-tabs a').on('click', function(e) {
+              let id = $(this).attr('href');
+              $('.tab-pane').removeClass('active');
+              $('.popover ' + id).addClass('active');
           });
           $('.editText').val( $(e.currentTarget).text());
         });
@@ -283,7 +282,6 @@ Template.project.events({
             }
       };
       var contenedorActual = e.currentTarget;
-      console.log(contenedorActual);
       $('.contenedor.active').popover(options)
         .popover('show')
         .on('shown.bs.popover', function () {
@@ -302,10 +300,10 @@ Template.project.events({
 */
 var createNode = function(data, nodeId) {
   var node = $("<div/>", {
-      class: (data.origin=='widget') ? 'node' : 'contenedor',
+      class: (data.origin === 'widget') ? 'node' : 'contenedor',
   }),
       template = '';
-  if (data.origin == 'grid') {
+  if (data.origin === 'grid') {
       template = Grid.findOne({name:data.name}).template;
   } else {
       template = Widgets.findOne({name:data.name}).template;
@@ -371,10 +369,8 @@ var editNodeEvent = function(e) {
       node.html(node.html().replace(node.text(), $('.popover .editText').val()));
     }
 
-    node.css(styles);
+    node.children().css(styles);
 
-    // IMPORTANTE
-    //verificar q no guarde sin texto los q son de texto o sin tamaño etc
     Meteor.call('updatePageContent', Session.get('currentProjectId'), Session.get('currentPage'), page.html());
     $('.node.active').popover('destroy');
 };
