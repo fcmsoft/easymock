@@ -223,7 +223,9 @@ Template.project.events({
       let type = $('.node.active').attr('data-type'),
           widget = Widgets.findOne({name : type}),
           propertiesList = widget.styles,
+          actions = EventList.find(),
           propertiesHtml = '',
+          actionsHtml = '',
           options = {
                 title    : function(){
                     return $('.properties-title').html();
@@ -235,7 +237,9 @@ Template.project.events({
                     return $('.properties-content').html();
                 }
               };
-
+      actions.forEach(function(action){
+        actionsHtml += `<label><input type="checkbox" id="cbox1" value="${action.event}"> ${action.event}</label><br>`;
+      });
       propertiesList.forEach(function(prop){
         let value = $(e.currentTarget).children().css(prop.name);
         propertiesHtml += `<div class="form-group properties-form-group"><label for="edit-${prop.name}">
@@ -243,6 +247,8 @@ Template.project.events({
       });
       $('#properties-form').html('');
       $('#properties-form').append(propertiesHtml);
+      $('#events-form').html('');
+      $('#events-form').append(actionsHtml);
       if (widget.includeText) {
         $('#properties-form').prepend('<div class="form-group properties-form-group"><label for="editText">Texto</label><input type="text" value="" name="editText" class="editText form-control"></div>');
       }
@@ -370,7 +376,8 @@ var editNodeEvent = function(e) {
     }
 
     node.children().css(styles);
-
+    // pensar como atachear los eventos!!!! 
+     
     Meteor.call('updatePageContent', Session.get('currentProjectId'), Session.get('currentPage'), page.html());
     $('.node.active').popover('destroy');
 };
