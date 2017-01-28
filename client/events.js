@@ -224,8 +224,10 @@ Template.project.events({
           widget = Widgets.findOne({name : type}),
           propertiesList = widget.styles,
           actions = EventList.find(),
+          operations = OperationList.find(),
           propertiesHtml = '',
           actionsHtml = '',
+          operationsHtml = '',
           options = {
                 title    : function(){
                     return $('.properties-title').html();
@@ -240,6 +242,11 @@ Template.project.events({
       actions.forEach(function(action){
         actionsHtml += `<label><input type="checkbox" id="cbox1" value="${action.event}"> ${action.event}</label><br>`;
       });
+      operationsHtml = `<select class="operations">`;
+      operations.forEach(function(op){
+        operationsHtml += `<option value="${op.name}"> ${op.name}</option>`;
+      });
+      operationsHtml += `</select>`;
       propertiesList.forEach(function(prop){
         let value = $(e.currentTarget).children().css(prop.name);
         propertiesHtml += `<div class="form-group properties-form-group"><label for="edit-${prop.name}">
@@ -247,8 +254,10 @@ Template.project.events({
       });
       $('#properties-form').html('');
       $('#properties-form').append(propertiesHtml);
-      $('#events-form').html('');
-      $('#events-form').append(actionsHtml);
+      $('#events-list').html('');
+      $('#events-list').append(actionsHtml);
+      $('#operations-list').html('');
+      $('#operations-list').append(operationsHtml);
       if (widget.includeText) {
         $('#properties-form').prepend('<div class="form-group properties-form-group"><label for="editText">Texto</label><input type="text" value="" name="editText" class="editText form-control"></div>');
       }
