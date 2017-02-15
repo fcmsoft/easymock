@@ -1,6 +1,6 @@
 Projects = new Meteor.Collection('projects');
 Pages = new Meteor.Collection('pages');
-Nodes = new Meteor.Collection('nodes');
+Specification = new Meteor.Collection('specification');
 
 Meteor.publish('projects', function() {
    var cursor = Projects.find({userId: this.userId},{pages: false});
@@ -15,9 +15,8 @@ Meteor.publish('pages', function() {
    return cursor;
 });
 
-Meteor.publish('nodes', function() {
-  //mejorar  q no levante todo de una?
-   var cursor = Nodes.find();
+Meteor.publish('specification', function() {
+   var cursor = Specification.find();
    this.ready();
    return cursor;
 });
@@ -53,34 +52,6 @@ Meteor.methods({
          lastDate: new Date
      }});
   },
-  addWidgetToPage: function(projectId, pageId, storeNode){
-    storeNode.pageId = pageId;
-    Nodes.insert(storeNode);
-
-    Projects.update({_id:projectId},
-     {$set: {
-       lastDate: new Date
-     }});
-  },
-
-  updateNode: function(projectId, node){
-    Nodes.update(
-      { _id: node._id },
-      { $set: node }
-    );
-    Projects.update({_id:projectId},
-     {$set: {
-       lastDate: new Date
-     }});
-  },
-
-  removeNode: function(projectId, nodeId) {
-    Nodes.remove(nodeId);
-    Projects.update({_id:projectId},
-     {$set: {
-       lastDate: new Date
-     }});
-  },
 
   removeProject: function(idP) {
     Projects.remove(idP);
@@ -101,6 +72,13 @@ Meteor.methods({
      {$set: {
        lastDate: new Date
      }});
-  }
+  },
+  addAction: function(projectId, newAction) {
+    Specification.insert(newAction);
+    Projects.update({_id:projectId},
+       {$set: {
+         lastDate: new Date
+     }});
+   },
 
 });

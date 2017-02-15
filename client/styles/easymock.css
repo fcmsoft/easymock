@@ -150,11 +150,14 @@ body.builder {
 /** NODE STYLE ***/
 .node {
     padding: 4px;
+    display: inline-block;
 }
 .node.active , .contenedor.active {
     border: 1px dotted red;
 }
-
+.action {
+  width: 100%;
+}
 .preview .node.active ,.preview .contenedor.active {
     border: none;
 }
@@ -181,10 +184,28 @@ body.builder {
 .applyEditText {
   margin-top: 20px;
   float: right;
+  margin-bottom: 15px;
 }
 
 .properties-form-group {
   margin-top: 10px;
+}
+
+.tag {
+  float: right;
+  border: 1px solid blue;
+  margin: 0;
+  margin-top: -8px;
+  margin-right: -8px;
+  padding: 3px;
+  background-color: #CCC;
+}
+
+.tag p {
+  padding: 0;
+  margin: 0;
+  font-size: 12px;
+  max-height: 14px;
 }
 
 /** Modal **/
