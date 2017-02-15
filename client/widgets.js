@@ -7,6 +7,16 @@ Widgets.insert(
     text: 'Button',
     styles: [
       {
+        name: 'text-align',
+        inputClass: 'editTextAlign',
+        label: 'Text Align'
+      },
+      {
+        name: 'align-items',
+        inputClass: 'editAlignItems',
+        label: 'Vertical Align'
+      },
+      {
         name: 'color',
         inputClass: 'editColor',
         label: 'Color',
