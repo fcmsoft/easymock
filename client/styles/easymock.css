@@ -150,7 +150,7 @@ body.builder {
 /** NODE STYLE ***/
 .node {
     padding: 4px;
-    display: inline-block;
+  /*  display: inline-block;*/
 }
 .node.active , .contenedor.active {
     border: 1px dotted red;
@@ -191,7 +191,7 @@ body.builder {
   margin-top: 10px;
 }
 
-.tag {
+.etiqueta {
   float: right;
   border: 1px solid blue;
   margin: 0;
@@ -201,7 +201,7 @@ body.builder {
   background-color: #CCC;
 }
 
-.tag p {
+.etiqueta p {
   padding: 0;
   margin: 0;
   font-size: 12px;

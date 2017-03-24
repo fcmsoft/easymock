@@ -47,16 +47,21 @@ Template.viewProjects.events({
 });
 
 Template.project.events({
-  'click .show-tags-button': function(e, tpl) {
-      clearSelection();
-      $('.tag').show();
-      $('.node').addClass('active');
-      $('.contenedor').addClass('active');
-  },
-  'click .hide-tags-button': function(e, tpl) {
-      $('.tag').hide();
-      $('.node').removeClass('active');
-      $('.contenedor').removeClass('active');
+  'click .elements-name-button': function(e, tpl) {
+      if (!$('.elements-name-button').hasClass('showing')) {
+        clearSelection();
+        $('.elements-name-button').addClass('showing');
+        $('.elements-name-button').val('Ocultar Elementos');
+        $('.etiqueta').show();
+        $('.node').addClass('active');
+        $('.contenedor').addClass('active');
+      } else {
+        $('.elements-name-button').removeClass('showing');
+        $('.elements-name-button').val('Ver Elementos');
+        $('.etiqueta').hide();
+        $('.node').removeClass('active');
+        $('.contenedor').removeClass('active');
+      }
   },
   'click .preview-button': function(e, tpl) {
       let script = '',
@@ -69,8 +74,7 @@ Template.project.events({
       $('body').removeClass('edit');
       $('.preview-button').hide();
       $('.edit-button').show();
-      $('.show-tags-button').hide();
-      $('.hide-tags-button').hide();
+      $('.elements-name-button').hide();
 
       // agregar acciones
       specifications.forEach(function(s) {
@@ -91,8 +95,7 @@ Template.project.events({
       $('body').addClass('edit');
       $('.preview-button').show();
       $('.edit-button').hide();
-      $('.show-tags-button').show();
-      $('.hide-tags-button').show();
+      $('.elements-name-button').show();
   },
   'click .save-page': function (e, tpl) {
       e.preventDefault();
@@ -199,10 +202,9 @@ Template.project.events({
     }
     //buscar el nodo anterior mas cercano
     nodeSelected = getPreviousNode(tpl.$('.page').children(), e.originalEvent.clientY);
-
     if (nodeSelected) {
         console.log('selecciono un nodo',page.find('#'+nodeSelected));
-        node.insertBefore(page.find('#'+nodeSelected));
+        node.insertAfter(page.find('#'+nodeSelected));
     } else {
         console.log('la mando abajo');
         page.append(node);
@@ -264,7 +266,7 @@ Template.project.events({
           propertiesList = widget.styles,
           actions = EventList.find(),
           operations = OperationList.find(),
-          elements = $('.tag:hidden');
+          elements = $('.etiqueta:hidden');
           propertiesHtml = '',
           actionsHtml = '',
           operationsHtml = '',
@@ -346,18 +348,29 @@ Template.project.events({
       e.stopPropagation();
       clearSelection();
       $(e.currentTarget).addClass('active');
-      var options = {
+      let options = {
             title    : function(){
                 return $('.properties-title').html();
             },
             container: 'body',
             html     : true,
-            placement: 'auto bottom',
+            placement: 'bottom',
             content  : function(){
                 return $('.properties-grid-content').html();
             }
-      };
-      var contenedorActual = e.currentTarget;
+      },
+          contenedorActual = e.currentTarget,
+          type = $('.contenedor.active').attr('data-type'),
+          container = Grid.findOne({name : type}),
+          propertiesList = container.styles
+          propertiesHtml = '';
+      propertiesList.forEach(function(prop){
+          let value = $(e.currentTarget).children().css(prop.name);
+              propertiesHtml += `<div class="form-group properties-form-group"><label for="edit-${prop.name}">
+                ${prop.label}</label><input type="text" value="${value}" class="form-control ${prop.inputClass}"></div>`;
+      });
+      $('#grid-properties-form').html('');
+      $('#grid-properties-form').append(propertiesHtml);
       $('.contenedor.active').popover(options)
         .popover('show')
         .on('shown.bs.popover', function () {
@@ -422,7 +435,7 @@ var deleteNodeEvent = function(e) {
         id = e.data.id;
     $('.node.active').popover('destroy');
     page.find('#'+id).remove();
-    page.find('#tag-'+id).remove();
+    page.find('#etiqueta-'+id).remove();
     Meteor.call('updatePageContent', Session.get('currentProjectId'), Session.get('currentPage'), page.html());
 };
 
@@ -432,7 +445,7 @@ var deleteContenedorEvent = function(e) {
     $('.contenedor.active').popover('destroy');
     console.log('Borrando contenedor:', e.data.contenedor, id);
     page.find('#'+id).remove();
-    page.find('#tag-'+id).remove();
+    page.find('#etiqueta-'+id).remove();
     Meteor.call('updatePageContent', Session.get('currentProjectId'), Session.get('currentPage'), page.html());
 };
 
@@ -444,11 +457,11 @@ var editNodeEvent = function(e) {
         widget = Widgets.findOne({name : type}),
         propertiesList = widget.styles,
         styles = {},
-        tag = page.find('#tag-'+id).length > 0 ?
-            page.find('#tag-'+id) :
+        etiqueta = page.find('#etiqueta-'+id).length > 0 ?
+            page.find('#etiqueta-'+id) :
             $("<div/>", {
-              class: 'tag',
-              id: 'tag-' + id
+              class: 'etiqueta',
+              id: 'etiqueta-' + id
             });
 
     propertiesList.forEach(function(prop) {
@@ -461,8 +474,8 @@ var editNodeEvent = function(e) {
       node.attr('data-element-name', $('.popover .elementName').val());
     }
     if ($('.popover .elementName').val().length > 0) {
-      tag.html('<p>'+$('.popover .elementName').val()+'</p>');
-      node.before(tag);
+      etiqueta.html('<p>'+$('.popover .elementName').val()+'</p>');
+      node.before(etiqueta);
     }
     node.children().css(styles);
 
@@ -497,11 +510,11 @@ var editGridEvent = function(e) {
         gridType = Grid.findOne({name : type}),
         propertiesList = gridType.styles,
         styles = {},
-        tag = page.find('#tag-'+id).length > 0 ?
-            page.find('#tag-'+id) :
+        etiqueta = page.find('#etiqueta-'+id).length > 0 ?
+            page.find('#etiqueta-'+id) :
             $("<div/>", {
-              class: 'tag',
-              id: 'tag-' + id
+              class: 'etiqueta',
+              id: 'etiqueta-' + id
             });
 
     propertiesList.forEach(function(prop) {
@@ -511,8 +524,8 @@ var editGridEvent = function(e) {
     if ( $('.popover .elementName').val().length > 0) {
       element.attr('data-element-name', $('.popover .elementName').val());
     }
-    tag.html('<p>'+$('.popover .elementName').val()+'</p>');
-    element.before(tag);
+    etiqueta.html('<p>'+$('.popover .elementName').val()+'</p>');
+    element.before(etiqueta);
     element.children().css(styles);
 
     Meteor.call('updatePageContent', Session.get('currentProjectId'), Session.get('currentPage'), page.html());
@@ -524,7 +537,7 @@ var clearSelection = function(){
   $('.node.active').removeClass('active');
   $('.contenedor.active').popover('destroy');
   $('.contenedor.active').removeClass('active');
-  $('.tag').hide();
+  $('.etiqueta').hide();
 };
 
 Template.eachPageInList.events({
