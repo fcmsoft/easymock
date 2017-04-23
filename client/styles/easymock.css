@@ -121,6 +121,10 @@ body.builder {
     position: relative;
 }
 
+.builder.preview .page {
+    padding: 0;
+}
+
 .popover-content .row {
     padding-bottom: 15px;
     border-bottom: 1px solid #ebebeb;
@@ -142,6 +146,11 @@ body.builder {
 .popover-content .row:last-child {
     border: none;
 }
+.tab-pane .form-inline {
+    margin: 20px 0;
+}
+
+
 /** widgets */
 .widget {
     margin-bottom: 5px;
@@ -176,12 +185,9 @@ body.builder {
 .contenedor .row {
   margin: 10px 0;
 }
+
 /** properties panel **/
-.properties {
-
-}
-
-.applyEditText {
+.tab-pane .btn {
   margin-top: 20px;
   float: right;
   margin-bottom: 15px;

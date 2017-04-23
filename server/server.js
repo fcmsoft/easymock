@@ -1,6 +1,7 @@
 Projects = new Meteor.Collection('projects');
 Pages = new Meteor.Collection('pages');
 Specification = new Meteor.Collection('specification');
+ContentTags = new Meteor.Collection('tags');
 
 Meteor.publish('projects', function() {
    var cursor = Projects.find({userId: this.userId},{pages: false});
@@ -17,6 +18,12 @@ Meteor.publish('pages', function() {
 
 Meteor.publish('specification', function() {
    var cursor = Specification.find();
+   this.ready();
+   return cursor;
+});
+
+Meteor.publish('tags', function() {
+   var cursor = ContentTags.find();
    this.ready();
    return cursor;
 });
@@ -62,7 +69,6 @@ Meteor.methods({
   },
 
   editProject: function(projectId, projectData){
-    console.log('update project');
     Projects.update({_id:projectId }, {$set: projectData} );
   },
 
@@ -74,11 +80,41 @@ Meteor.methods({
      }});
   },
   addAction: function(projectId, newAction) {
-    Specification.insert(newAction);
+    // add action if not exist any action for that elem 
+    // otherwise update it
+    var existe = Specification.findOne({page: newAction.page, project: newAction.project, el: newAction.el});
+    
+    existe ? 
+      Specification.update(
+        {page: newAction.page, project: newAction.project, el: newAction.el},
+        {$set: {
+          element: newAction.element,
+          event: newAction.event,
+          operation: newAction.operation
+          }
+        }) : 
+      Specification.insert(newAction);
     Projects.update({_id:projectId},
        {$set: {
          lastDate: new Date
      }});
    },
-
+   addTag: function(projectId, newTag) {
+  // add content tag if not exist any for that elem 
+    // otherwise update it
+    var existe = ContentTags.findOne({page: newTag.page, project: newTag.project, el: newTag.el});
+    
+    existe ? 
+      ContentTags.update(
+        {page: newTag.page, project: newTag.project, el: newTag.el},
+        {$set: {
+          tag: newTag.tag,
+          }
+        }) : 
+    ContentTags.insert(newTag);
+    Projects.update({_id:projectId},
+       {$set: {
+         lastDate: new Date
+     }});
+   },
 });

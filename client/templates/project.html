@@ -66,18 +66,6 @@
 								  </div>
 								</div>
 
-                <a href="#" class="list-group-item" data-toggle="collapse" data-target="#collapseTags" aria-expanded="false">
-									<span class="glyphicon glyphicon-th"></span> Tags de Contenido <b class="caret"></b>
-								</a>
-								<div>
-								  <div class="well collapse" id="collapseTags">
-										<div class="list-group tags-list-group">
-								    	{{#each tags}}
-								    		{{>eachTagInList}}
-								    	{{/each}}
-								    </div>
-								  </div>
-								</div>
 							</div>
 						</div>
 			  	</div>
@@ -113,12 +101,6 @@
 
 <template name="eachGridInList">
 	<a href="#" class="btn btn-default grid" title="{{name}}">
-		<span>{{text}}</span>
-	</a>
-</template>
-
-<template name="eachTagInList">
-	<a href="#" class="btn btn-default tag" title="{{name}}">
 		<span>{{text}}</span>
 	</a>
 </template>
