@@ -80,11 +80,11 @@ Meteor.methods({
      }});
   },
   addAction: function(projectId, newAction) {
-    // add action if not exist any action for that elem 
+    // add action if not exist any action for that elem
     // otherwise update it
     var existe = Specification.findOne({page: newAction.page, project: newAction.project, el: newAction.el});
-    
-    existe ? 
+
+    existe ?
       Specification.update(
         {page: newAction.page, project: newAction.project, el: newAction.el},
         {$set: {
@@ -92,27 +92,35 @@ Meteor.methods({
           event: newAction.event,
           operation: newAction.operation
           }
-        }) : 
+        }) :
       Specification.insert(newAction);
     Projects.update({_id:projectId},
        {$set: {
          lastDate: new Date
      }});
    },
-   addTag: function(projectId, newTag) {
-  // add content tag if not exist any for that elem 
+   addTag: function(newTag) {
+  // add content tag if not exist any for that elem
     // otherwise update it
     var existe = ContentTags.findOne({page: newTag.page, project: newTag.project, el: newTag.el});
-    
-    existe ? 
+
+    existe ?
       ContentTags.update(
         {page: newTag.page, project: newTag.project, el: newTag.el},
         {$set: {
           tag: newTag.tag,
+          item: newTag.item
           }
-        }) : 
+        }) :
     ContentTags.insert(newTag);
-    Projects.update({_id:projectId},
+    Projects.update({_id:newTag.project},
+       {$set: {
+         lastDate: new Date
+     }});
+   },
+   deleteTag: function(tag) {
+    ContentTags.remove({page: tag.page, project: tag.project, el: tag.el});
+    Projects.update({_id:tag.project},
        {$set: {
          lastDate: new Date
      }});

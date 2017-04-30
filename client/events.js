@@ -124,7 +124,7 @@ Template.project.events({
               crossorigin="anonymous">
             </script>
             <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js" integrity="sha384-Tc5IQib027qvyjSMfHjOMaLkfuWVxZxUPnCJA7l2mCWNIpG9mGCD8wGNIcPD7Txa" crossorigin="anonymous"></script>
-            
+
           </head><body><div class="container-fluid">`;
 
       // agregar acciones
@@ -338,7 +338,7 @@ function editEvent(e, tpl) {
           tagsHtlm = '',
           options = {
                 title    : function(){
-                    return $('.properties-title').html();
+                    return $('.properties-title').html() + (isWidget ? 'Widget' : 'Grid');
                 },
                 container: 'body',
                 html     : true,
@@ -348,14 +348,27 @@ function editEvent(e, tpl) {
                 }
               };
 
+      // selecciono la primer tab para que no quede marcada la anterior seleccionada
+      $('a#style-tab').click();
+
+      // armar lista de tags disponibles
       tagsHtml = `<select class="content-tags form-control"><option value="-1"> Seleccione...</option>`;
       tags.forEach(function(tag) {
-        let tagState = (contentTag && tag.name === contentTag.tag) ? 'selected' : '';
-        tagsHtml += `<option value="${tag.name}" ${tagState}> ${tag.text}</option>`;
+        let tagState = '';
+        if (tag.type === 'string') {
+          tagState = (contentTag && tag.name === contentTag.tag) ? 'selected' : '';
+          tagsHtml += `<option value="${tag.name}" ${tagState}> ${tag.name}</option>`;
+        } else {
+          tag.items.forEach(function(itemTag) {
+            tagState = (contentTag && tag.name === contentTag.tag && itemTag === contentTag.item) ? 'selected' : '';
+            tagsHtml += `<option value="${tag.name}.${itemTag}" ${tagState}> ${tag.name}.${itemTag}</option>`;
+          });
+        }
       });
-      tagsHtml += `</select>`;
+      tagsHtml += `</select><div class="tag-description"></div>`;
+
       actionsHtml = `<select class="actions form-control"><option value="-1"> Seleccione...</option>`;
-      actions.forEach(function(action) { console.log(especificacion);
+      actions.forEach(function(action) {
         let state = (especificacion && especificacion.event === action.event) ? 'selected' : '';
         actionsHtml += `<option value="${action.event}" ${state}> ${action.event}</option>`;
       });
@@ -410,6 +423,15 @@ function editEvent(e, tpl) {
               $('.tab-pane').removeClass('active');
               $('.popover ' + id).addClass('active');
           });
+          $('.popover .content-tags').on('click', function(e) {
+              // se selecciono una tag de contenido
+              // muestro debajo de la lista la descripcion
+              let selTag = $('.popover .content-tags').val(),
+                  tagParts = selTag.split('.'),
+                  tag = Tags.findOne({name: tagParts[0]});
+
+              $('.tag-description').html(tag ? tag.text : '');
+          });
           $('.editText').val( $(e.currentTarget).text());
           $('.elementName').val( $(e.currentTarget).attr('data-element-name'));
         });
@@ -433,7 +455,7 @@ function agregarContentFromTags(contentTags) {
     let scriptTags = '';
     contentTags.forEach(function(ct) {
         let t = Tags.findOne({name: ct.tag}),
-            htmlRes = t.process; 
+            htmlRes = t.process;
 
         scriptTags += `<script type="text/javascript"> console.log($('#${ct.el}'));
                     if($('#${ct.el}').hasClass('contenedor')) {
@@ -564,19 +586,23 @@ function editOperations(e) {
 
 function editContentTags(e) {
     let elemTypeClass = e.data.isWidget ? '.node' : '.contenedor',
+        selTag = $('.popover .content-tags').val(),
+        tagParts = selTag.split('.'),
         tag = {
           project: Session.get('currentProjectId'),
           page: Session.get('currentPage'),
           el: e.data.id,
-          tag: $('.popover .content-tags').val()
+          tag: tagParts[0],
+          item: tagParts[1]
         };
-
+        console.log(tag);
     if (tag.tag != '-1') {
-      Meteor.call('addTag',  Session.get('currentProjectId'), tag);
-      $(elemTypeClass + '.active').popover('destroy');
+      Meteor.call('addTag', tag);
     } else {
-      //show error
+      //selecciono ninguno, borro lo q tenia
+      Meteor.call('deleteTag',  tag);
     }
+    $(elemTypeClass + '.active').popover('destroy');
 };
 
 function editGridEvent(e) {
@@ -609,11 +635,10 @@ function editGridEvent(e) {
     $('.contenedor.active').popover('destroy');
 };
 
-function clearSelection(){
-  $('.node.active').popover('destroy');
-  $('.node.active').removeClass('active');
-  $('.contenedor.active').popover('destroy');
-  $('.contenedor.active').removeClass('active');
-  $('.etiqueta').hide();
+function clearSelection() {
+    $('.node.active').popover('destroy');
+    $('.node.active').removeClass('active');
+    $('.contenedor.active').popover('destroy');
+    $('.contenedor.active').removeClass('active');
+    $('.etiqueta').hide();
 };
-

@@ -149,7 +149,9 @@ body.builder {
 .tab-pane .form-inline {
     margin: 20px 0;
 }
-
+.tag-description {
+  margin: 10px;
+}
 
 /** widgets */
 .widget {
