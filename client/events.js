@@ -213,7 +213,7 @@ Template.project.events({
       e.originalEvent.dataTransfer.effectAllowed = "move";
   },
 
-  'dragenter .page': function (e, tpl) { console.log('ENTRE A DRAGENTER page');
+  'dragenter .page': function (e, tpl) {
       e.preventDefault();
       e.originalEvent.dataTransfer.dropEffect = "copy";
   },
@@ -268,7 +268,7 @@ Template.project.events({
         nodoOriginIdentyfyByClass = nodoOriginIdentyfyByClass[2];
 
     e.preventDefault();
-
+console.log('next',nextId);
     if (data.origin === 'node') {
       node = page.find('#'+data.id).clone();
       page.find('#'+data.id).remove();
@@ -284,9 +284,9 @@ Template.project.events({
         console.log(page.find('#'+nodeSelected));
         node.insertBefore(page.find('#'+nodeSelected));
     } else {
-        console.log('la mando abajo', page.find('#'+$(e.currentTarget).attr('id')));
-        let nodoFinal = page.find('#'+$(e.currentTarget).parent().parent().attr('id')+ ' .row .' + nodoOriginIdentyfyByClass);
-        nodoFinal.append(node);
+        console.log('la mando abajo ID:', $(e.currentTarget).parent().parent().attr('id')+'-'+nodoOriginIdentyfyByClass+'-'+(nextId+1));
+        let nodoFinal = page.find('#'+$(e.currentTarget).parent().parent().attr('id')+ ' .row .' + nodoOriginIdentyfyByClass).first();
+        nodoFinal.append(node); console.log('inserta en', nodoFinal);
     }
 
    Meteor.call('updatePageContent', Session.get('currentProjectId'), Session.get('currentPage'), page.html());
@@ -328,6 +328,7 @@ function editEvent(e, tpl) {
           actions = EventList.find(),
           operations = OperationList.find(),
           tags = Tags.find(),
+          tagsDisponibles = getTagsDisponibles(tags, isWidget),
           elements = $('.etiqueta:hidden'),
           contentTag = ContentTags.findOne({page : Session.get("currentPage"), el: elemId}),
           especificacion = Specification.findOne({page : Session.get("currentPage"), el: elemId}),
@@ -348,22 +349,18 @@ function editEvent(e, tpl) {
                 }
               };
 
-      // selecciono la primer tab para que no quede marcada la anterior seleccionada
-      $('a#style-tab').click();
-
       // armar lista de tags disponibles
       tagsHtml = `<select class="content-tags form-control"><option value="-1"> Seleccione...</option>`;
-      tags.forEach(function(tag) {
-        let tagState = '';
-        if (tag.type === 'string') {
-          tagState = (contentTag && tag.name === contentTag.tag) ? 'selected' : '';
-          tagsHtml += `<option value="${tag.name}" ${tagState}> ${tag.name}</option>`;
+      tagsDisponibles.forEach(function(tag) {
+        let tagState = '',
+            tagData = tag.split('.'),
+            typeTagCompuesta = tagData.length > 1;
+        if (typeTagCompuesta) {
+            tagState = (contentTag && tagData[0] === contentTag.tag && tagData[1] === contentTag.item) ? 'selected' : '';
         } else {
-          tag.items.forEach(function(itemTag) {
-            tagState = (contentTag && tag.name === contentTag.tag && itemTag === contentTag.item) ? 'selected' : '';
-            tagsHtml += `<option value="${tag.name}.${itemTag}" ${tagState}> ${tag.name}.${itemTag}</option>`;
-          });
+            tagState = (contentTag && tagData[0] === contentTag.tag) ? 'selected' : '';
         }
+        tagsHtml += `<option value="${tag}" ${tagState}> ${tag}</option>`;
       });
       tagsHtml += `</select><div class="tag-description"></div>`;
 
@@ -420,9 +417,12 @@ function editEvent(e, tpl) {
           // hago esto manualmente en vez de usar .tab() porque tengo los id en la plantilla y rompen
           $('.popover #properties-tabs a').on('click', function(e) {
               let id = $(this).attr('href');
-              $('.tab-pane').removeClass('active');
+              $('.tab-pane').removeClass('active');  console.log('click en tab', id);
               $('.popover ' + id).addClass('active');
           });
+          // selecciono la primer tab para que no quede marcada la anterior seleccionada
+          $('a#style-tab').click();
+
           $('.popover .content-tags').on('click', function(e) {
               // se selecciono una tag de contenido
               // muestro debajo de la lista la descripcion
@@ -436,6 +436,46 @@ function editEvent(e, tpl) {
           $('.elementName').val( $(e.currentTarget).attr('data-element-name'));
         });
   }
+
+//retorna lista de tags de acuerdo a si es grid o widget
+function getTagsDisponibles(tags, isWidget) {
+    let res = [];
+    if (isWidget) {
+        tags.forEach(function(t){
+          switch (t.type) {
+            case 'string':
+              res.push(t.name);
+              break;
+            case 'object':
+              t.items.forEach(function (item) {
+                res.push(t.name + '.' + item);
+              });
+              break;
+            case 'array':
+              t.items.forEach(function(item) {
+                res.push(t.name + '*.' + item);
+              });
+              break;
+          }
+        });
+    } else {
+      //es contenedor
+      tags.forEach(function(t){
+        switch (t.type) {
+          case 'string':
+            //no se puede agregar directamente a grid
+            break;
+          case 'object':
+            res.push(t.name);
+            break;
+          case 'array':
+            res.push(t.name);
+            break;
+        }
+      });
+    }
+    return res;
+}
 
   // agregar acciones
 function agregarAcciones(specifications) {
@@ -455,15 +495,25 @@ function agregarContentFromTags(contentTags) {
     let scriptTags = '';
     contentTags.forEach(function(ct) {
         let t = Tags.findOne({name: ct.tag}),
-            htmlRes = t.process;
+            tagFunction = t.process;
 
-        scriptTags += `<script type="text/javascript"> console.log($('#${ct.el}'));
-                    if($('#${ct.el}').hasClass('contenedor')) {
-                       $('#${ct.el}').find('div div').html(${htmlRes});
-                    } else {
-                      $('#${ct.el}').html($('#${ct.el}').html().replace($('#${ct.el}').text(),${htmlRes}));
+        scriptTags += `<script type="text/javascript">
+            (function () {
+                    console.log($('#${ct.el}'));
+                    if ($('#${ct.el}').length) {
+                        var htmlRes = ${tagFunction}();
+                        if (typeof htmlRes === 'object') {
+                          //si el resultado es un objeto, solo tomo la propiedad q corresponde
+                          htmlRes = htmlRes['${ct.item}'];
+                        } console.log(htmlRes); console.log('${ct.item}');
+                        if($('#${ct.el}').hasClass('contenedor')) {
+                           $('#${ct.el}').find('div div').html(htmlRes);
+                        } else {
+                          $('#${ct.el}').html($('#${ct.el}').html().replace($('#${ct.el}').text(),htmlRes));
+                        }
                     }
-                  </script>`;
+            })();
+          </script>`;
       });
       return scriptTags;
 }
@@ -593,7 +643,7 @@ function editContentTags(e) {
           page: Session.get('currentPage'),
           el: e.data.id,
           tag: tagParts[0],
-          item: tagParts[1]
+          item: tagParts[1] || ''
         };
         console.log(tag);
     if (tag.tag != '-1') {

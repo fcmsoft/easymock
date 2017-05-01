@@ -5,8 +5,8 @@ Tags = new Meteor.Collection(null);
 Tags.insert(
   {
     name: 'tag1',
-    text: 'TAG 1  ',
-    process: `function() { return 'hola';}`,
+    text: 'TAG 1 String Unico',
+    process: `function() { return 'Biblioteca ON line';}`,
     type: 'string'
   }
 );
@@ -22,16 +22,38 @@ Tags.insert(
 );
 Tags.insert(
   {
-    name: 'tag3',
-    text: 'TAG LIBRO con propiedades: título, autor y editorial',
+    name: 'autor',
+    text: 'TAG Autor - Objeto unico',
     process: `function() {
       return {
-        titulo: 'Una noche fatal',
-        autor: 'juan perez',
-        editorial: 'nueva edcion'
+        nombre: 'Juan Perez',
+        fecha-nacimiento: '13-01-1970',
+        nacionalidad: 'Argentino'
       };
     }`,
     type: 'object',
+    items: ['nombre', 'fecha-nacimiento', 'nacionalidad']
+  }
+);
+Tags.insert(
+  {
+    name: 'libros1',
+    text: 'TAG SET de LIBROS con propiedades: título, autor y editorial',
+    process: `function() {
+      return [
+        {
+          titulo: 'Una noche fatal',
+          autor: 'Juan Perez',
+          editorial: 'nueva edcion'
+        },
+        {
+          titulo: 'Otro libro mas',
+          autor: 'Matilda Lopez',
+          editorial: 'Editorial masa'
+        }
+    ];
+    }`,
+    type: 'array',
     items: ['titulo', 'autor', 'editorial']
   }
 );
