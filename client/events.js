@@ -70,16 +70,13 @@ Template.project.events({
       if (!$('.elements-name-button').hasClass('showing')) {
         clearSelection();
         $('.elements-name-button').addClass('showing');
-        $('.elements-name-button').val('Ocultar Elementos');
+        $('.elements-name-button').val('Ocultar Elementos/Tags');
         $('.etiqueta').show();
+        $('.etiquetaContent').show();
         $('.node').addClass('active');
         $('.contenedor').addClass('active');
       } else {
-        $('.elements-name-button').removeClass('showing');
-        $('.elements-name-button').val('Ver Elementos');
-        $('.etiqueta').hide();
-        $('.node').removeClass('active');
-        $('.contenedor').removeClass('active');
+          hideElementsName();
       }
   },
   'click .preview-button': function(e, tpl) {
@@ -96,7 +93,8 @@ Template.project.events({
       $('.preview-button').hide();
       $('.edit-button').show();
       $('.elements-name-button').hide();
-
+      $('.etiquetaContent').hide();
+      $('.etiqueta').hide();
       // agregar acciones
       $('body').append(agregarAcciones(specifications));
 
@@ -296,6 +294,7 @@ console.log('next',nextId);
       // si hago clic en una parte de la pagina q no es un nodo, quiero des-seleccionar
       e.stopPropagation();
       clearSelection();
+      hideElementsName();
   },
 
   'click .node': function (e, tpl) {
@@ -589,11 +588,18 @@ function editNodeEvent(e) {
         widget = Widgets.findOne({name : type}),
         propertiesList = widget.styles,
         styles = {},
-        etiqueta = page.find('#etiqueta-'+id).length > 0 ?
-            page.find('#etiqueta-'+id) :
+        etiqueta = page.find('#etiqueta-' + id).length > 0 ?
+            page.find('#etiqueta-' + id) :
             $("<div/>", {
               class: 'etiqueta',
               id: 'etiqueta-' + id
+            }),
+        contentTag = ContentTags.findOne({page : Session.get("currentPage"), el: id}),
+        etiquetaContent = page.find('#etiquetaContent-' + id).length > 0 ?
+            page.find('#etiquetaContent-' + id) :
+            $("<div/>", {
+              class: 'etiquetaContent',
+              id: 'etiquetaContent-' + id
             });
 
     propertiesList.forEach(function(prop) {
@@ -609,6 +615,12 @@ function editNodeEvent(e) {
       etiqueta.html('<p>'+$('.popover .elementName').val()+'</p>');
       node.before(etiqueta);
     }
+    // agregar texto a la etiqueta de contenido (tag) si tiene
+    if (contentTag) {
+      etiquetaContent.html('<p>Data('+contentTag.tag+')</p>');
+      node.before(etiquetaContent);
+    }
+
     node.children().css(styles);
 
     Meteor.call('updatePageContent', Session.get('currentProjectId'), Session.get('currentPage'), page.html());
@@ -663,6 +675,13 @@ function editGridEvent(e) {
         gridType = Grid.findOne({name : type}),
         propertiesList = gridType.styles,
         styles = {},
+        contentTag = ContentTags.findOne({page : Session.get("currentPage"), el: id}),
+        etiquetaContent = page.find('#etiquetaContent-' + id).length > 0 ?
+            page.find('#etiquetaContent-' + id) :
+            $("<div/>", {
+              class: 'etiquetaContent',
+              id: 'etiquetaContent-' + id
+            }),
         etiqueta = page.find('#etiqueta-'+id).length > 0 ?
             page.find('#etiqueta-'+id) :
             $("<div/>", {
@@ -676,14 +695,29 @@ function editGridEvent(e) {
 
     if ( $('.popover .elementName').val().length > 0) {
       element.attr('data-element-name', $('.popover .elementName').val());
+      etiqueta.html('<p>'+$('.popover .elementName').val()+'</p>');
+      element.before(etiqueta);
     }
-    etiqueta.html('<p>'+$('.popover .elementName').val()+'</p>');
-    element.before(etiqueta);
+
+    // agregar texto a la etiqueta de contenido (tag) si tiene
+    if (contentTag) {
+      etiquetaContent.html('<p>Data('+contentTag.tag+')</p>');
+      element.before(etiquetaContent);
+    }
     element.children().css(styles);
 
     Meteor.call('updatePageContent', Session.get('currentProjectId'), Session.get('currentPage'), page.html());
     $('.contenedor.active').popover('destroy');
 };
+
+function hideElementsName() {
+    $('.elements-name-button').removeClass('showing');
+    $('.elements-name-button').val('Ver Elementos/Tags');
+    $('.etiqueta').hide();
+    $('.etiquetaContent').hide();
+    $('.node').removeClass('active');
+    $('.contenedor').removeClass('active');
+}
 
 function clearSelection() {
     $('.node.active').popover('destroy');
@@ -691,4 +725,5 @@ function clearSelection() {
     $('.contenedor.active').popover('destroy');
     $('.contenedor.active').removeClass('active');
     $('.etiqueta').hide();
+    $('.etiquetaContent').hide();
 };

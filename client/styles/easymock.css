@@ -163,7 +163,10 @@ body.builder {
     padding: 4px;
   /*  display: inline-block;*/
 }
-.node.active , .contenedor.active {
+.contenedor.active {
+    border: 1px dotted green;
+}
+.node.active {
     border: 1px dotted red;
 }
 .action {
@@ -199,9 +202,9 @@ body.builder {
   margin-top: 10px;
 }
 
-.etiqueta {
+.etiquetaContent {
   float: right;
-  border: 1px solid blue;
+  border: 1px solid darkred;
   margin: 0;
   margin-top: -8px;
   margin-right: -8px;
@@ -209,7 +212,18 @@ body.builder {
   background-color: #CCC;
 }
 
-.etiqueta p {
+.etiqueta {
+  float: right;
+  border: 1px solid blue;
+  margin: 0;
+  margin-top: -8px;
+  margin-right: -8px;
+  margin-left: 15px;
+  padding: 3px;
+  background-color: #CCC;
+}
+
+.etiqueta p, .etiquetaContent p {
   padding: 0;
   margin: 0;
   font-size: 12px;
