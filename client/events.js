@@ -100,6 +100,7 @@ Template.project.events({
 
       // agregar tags de content
       $('body').append(agregarContentFromTags(contentTags));
+
   },
   'click .edit-button': function(e, tpl) {
     // tengo q recargar la pagina, es mas facil q borrar los javascripts etc agregados
@@ -490,30 +491,64 @@ function agregarAcciones(specifications) {
       return script;
 }
 
-function agregarContentFromTags(contentTags) {
-    let scriptTags = '';
-    contentTags.forEach(function(ct) {
-        let t = Tags.findOne({name: ct.tag}),
-            tagFunction = t.process;
-
-        scriptTags += `<script type="text/javascript">
-            (function () {
-                    console.log($('#${ct.el}'));
-                    if ($('#${ct.el}').length) {
-                        var htmlRes = ${tagFunction}();
+function agregarScriptContentTagFunction() {
+    return `
+            function generator(ct, htmlRes) {
+                  let elem = $('#' + ct.el);
+                  if (elem.length) {
+                    //es un elem comun
                         if (typeof htmlRes === 'object') {
                           //si el resultado es un objeto, solo tomo la propiedad q corresponde
-                          htmlRes = htmlRes['${ct.item}'];
-                        } console.log(htmlRes); console.log('${ct.item}');
-                        if($('#${ct.el}').hasClass('contenedor')) {
-                           $('#${ct.el}').find('div div').html(htmlRes);
-                        } else {
-                          $('#${ct.el}').html($('#${ct.el}').html().replace($('#${ct.el}').text(),htmlRes));
+                          htmlRes = htmlRes[ct.item];
                         }
-                    }
-            })();
-          </script>`;
+                        elem.html(elem.html().replace(elem.text(),htmlRes));
+                  }
+              }
+
+              //es un grid con array, plantilla a repetir
+              function arrayGenerator(ct, htmlRes) {
+                let elem = $('#' + ct.el);
+                if (elem.length) {
+                  if(elem.hasClass('contenedor')) {
+                    //htmlRes es un array
+                    htmlRes.forEach(function(data){
+                      var e = elem.clone();
+
+                      elem.after(e);
+                    });
+                  }
+                }
+              }`;
+}
+
+function agregarContentFromTags(contentTags) {
+    let scriptTags = '';
+    scriptTags += `<script type="text/javascript">`;
+    scriptTags += agregarScriptContentTagFunction();
+    contentTags.forEach(function(ct) {
+        let t = Tags.findOne({name: ct.tag}),
+            tagFunction = t.process,
+            relativeElems = [];
+        if (t.type === 'array') {
+            if (ct.item === 'undefined' || ct.item === ''){
+                relativeElems = ContentTags.find({page : Session.get("currentPage"), tag: ct.tag, item: {$ne: ''}}).fetch();
+                console.log(relativeElems);
+                scriptTags += `
+                    (function () {
+                      var res = ${tagFunction}();
+                      arrayGenerator({tag: '${ct.tag}', el: '${ct.el}'}, res);
+                    })();`;
+            }
+        } else {
+          scriptTags += `
+              (function () {
+                var res = ${tagFunction}();
+                generator({tag: '${ct.tag}', el: '${ct.el}', item: '${ct.item}'}, res);
+              })();`;
+        }
+
       });
+      scriptTags += `</script>`
       return scriptTags;
 }
 /*
@@ -580,6 +615,24 @@ function deleteContenedorEvent(e) {
     Meteor.call('updatePageContent', Session.get('currentProjectId'), Session.get('currentPage'), page.html());
 };
 
+function getEtiquetaContent(page, id, contentTag){
+    let etiquetaContent = page.find('#etiquetaContent-' + id).length > 0 ?
+      page.find('#etiquetaContent-' + id) :
+      $("<div/>", {
+        class: 'etiquetaContent',
+        id: 'etiquetaContent-' + id
+      }),
+      type = Tags.findOne({name: contentTag.tag}).type,
+      tagText = contentTag.tag;
+    if (type === 'object') {
+      tagText += '.' + contentTag.item;
+    }
+    if (type === 'array') {
+      tagText += '*.' + contentTag.item;
+    }
+    return etiquetaContent.html('<p>Data('+tagText+')</p>');
+}
+
 function editNodeEvent(e) {
     let page = $('.page').clone(),
         id = e.data.id,
@@ -594,13 +647,7 @@ function editNodeEvent(e) {
               class: 'etiqueta',
               id: 'etiqueta-' + id
             }),
-        contentTag = ContentTags.findOne({page : Session.get("currentPage"), el: id}),
-        etiquetaContent = page.find('#etiquetaContent-' + id).length > 0 ?
-            page.find('#etiquetaContent-' + id) :
-            $("<div/>", {
-              class: 'etiquetaContent',
-              id: 'etiquetaContent-' + id
-            });
+        contentTag = ContentTags.findOne({page : Session.get("currentPage"), el: id});
 
     propertiesList.forEach(function(prop) {
       styles[prop.name] = $('.popover .' + prop.inputClass).val();
@@ -617,8 +664,7 @@ function editNodeEvent(e) {
     }
     // agregar texto a la etiqueta de contenido (tag) si tiene
     if (contentTag) {
-      etiquetaContent.html('<p>Data('+contentTag.tag+')</p>');
-      node.before(etiquetaContent);
+      node.before(getEtiquetaContent(page, id, contentTag));
     }
 
     node.children().css(styles);
@@ -654,7 +700,7 @@ function editContentTags(e) {
           project: Session.get('currentProjectId'),
           page: Session.get('currentPage'),
           el: e.data.id,
-          tag: tagParts[0],
+          tag: tagParts[0].replace('*', ''),
           item: tagParts[1] || ''
         };
         console.log(tag);

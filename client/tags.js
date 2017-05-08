@@ -27,8 +27,8 @@ Tags.insert(
     process: `function() {
       return {
         nombre: 'Juan Perez',
-        fecha-nacimiento: '13-01-1970',
-        nacionalidad: 'Argentino'
+        'fecha-nacimiento': '13-01-1970',
+        'nacionalidad': 'Argentino'
       };
     }`,
     type: 'object',
