@@ -509,7 +509,7 @@ function agregarScriptContentTagFunction() {
               function arrayGenerator(ct, htmlRes) {
                 let elem = $('#' + ct.el);
                 if (elem.length) {
-                  if(elem.hasClass('contenedor')) {
+                  if(elem.hasClass('contenedor')) { console.log(ct.item);
                     //htmlRes es un array
                     htmlRes.forEach(function(data){
                       var e = elem.clone();
@@ -532,12 +532,13 @@ function agregarContentFromTags(contentTags) {
         if (t.type === 'array') {
             if (ct.item === 'undefined' || ct.item === ''){
                 relativeElems = ContentTags.find({page : Session.get("currentPage"), tag: ct.tag, item: {$ne: ''}}).fetch();
-                console.log(relativeElems);
-                scriptTags += `
-                    (function () {
-                      var res = ${tagFunction}();
-                      arrayGenerator({tag: '${ct.tag}', el: '${ct.el}'}, res);
-                    })();`;
+                relativeElems.forEach(function(re) {
+                    scriptTags += `
+                        (function () {
+                          var res = ${tagFunction}();
+                          arrayGenerator({tag: '${ct.tag}', el: '${ct.el}', item: '${re.item}'}, res);
+                        })();`;
+                });
             }
         } else {
           scriptTags += `
