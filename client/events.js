@@ -132,7 +132,10 @@ Template.project.events({
       // agregar tags de content
       page.append(agregarContentFromTags(contentTags));
 
+      //eliminar las etiquetas
       page.find('.etiqueta').remove();
+      page.find('.etiquetaContent').remove();
+
       content = content + page.html() + script + '</div></body></html>';
       uriContent = "data:application/octet-stream," + encodeURIComponent(content);
       // TODO: ver si es posible asignar nombre y extension html
@@ -494,7 +497,7 @@ function agregarAcciones(specifications) {
 function agregarScriptContentTagFunction() {
     return `
             function generator(ct, htmlRes) {
-                  let elem = $('#' + ct.el);
+                  var elem = $('#' + ct.el);
                   if (elem.length) {
                     //es un elem comun
                         if (typeof htmlRes === 'object') {
@@ -506,16 +509,17 @@ function agregarScriptContentTagFunction() {
               }
 
               //es un grid con array, plantilla a repetir
-              function arrayGenerator(ct, htmlRes) {
-                let elem = $('#' + ct.el);
+              function arrayGenerator(el, items, htmlRes) { console.log(el, items, htmlRes);
+                var elem = $(el);
                 if (elem.length) {
-                  if(elem.hasClass('contenedor')) { console.log(ct.item);
-                    //htmlRes es un array
-                    htmlRes.forEach(function(data){
-                      var e = elem.clone();
-
-                      elem.after(e);
+                  if(elem.hasClass('contenedor')) {
+                    var elContent = elem.clone();
+                    elContent.addClass('cloned');
+                    items.forEach(function(item){
+                      var e = elContent.find(item.el);
+                      e.html(e.html().replace(e.text(),htmlRes[item.item]));
                     });
+                    elem.after(elContent);
                   }
                 }
               }`;
@@ -532,13 +536,18 @@ function agregarContentFromTags(contentTags) {
         if (t.type === 'array') {
             if (ct.item === 'undefined' || ct.item === ''){
                 relativeElems = ContentTags.find({page : Session.get("currentPage"), tag: ct.tag, item: {$ne: ''}}).fetch();
-                relativeElems.forEach(function(re) {
+              //  relativeElems.forEach(function(re) {
                     scriptTags += `
                         (function () {
                           var res = ${tagFunction}();
-                          arrayGenerator({tag: '${ct.tag}', el: '${ct.el}', item: '${re.item}'}, res);
+                          res.forEach(function(r){
+                              //por cada uno de los resultados encontrados, llamo a generator
+                              arrayGenerator('#${ct.el}', ${printItems(relativeElems)}, r);
+                          });
+                          //al final tengo q borrar el contenedor original
+                          $('#${ct.el}').not('.cloned').remove();
                         })();`;
-                });
+                //});
             }
         } else {
           scriptTags += `
@@ -552,6 +561,15 @@ function agregarContentFromTags(contentTags) {
       scriptTags += `</script>`
       return scriptTags;
 }
+
+function printItems(elements) {
+  let elems = '[';
+  elements.forEach(function(e){
+    elems += `{'item':'${e.item}', el: '#${e.el}'},`;
+  });
+  return elems + ']';
+}
+
 /*
 * Create a new node to insert in page
 */
