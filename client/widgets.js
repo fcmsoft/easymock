@@ -140,6 +140,11 @@ Widgets.insert(
     text: 'Título',
     styles: [
       {
+        name: 'font-size',
+        inputClass: 'editFontSize',
+        label: 'Font Size',
+      },
+      {
         name: 'color',
         inputClass: 'editColor',
         label: 'Color',
@@ -180,6 +185,11 @@ Widgets.insert(
     template: '<h2>Titulo2</h2>',
     text: 'Título2',
     styles: [
+      {
+        name: 'font-size',
+        inputClass: 'editFontSize',
+        label: 'Font Size',
+      },
       {
         name: 'color',
         inputClass: 'editColor',

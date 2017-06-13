@@ -509,7 +509,7 @@ function agregarScriptContentTagFunction() {
               }
 
               //es un grid con array, plantilla a repetir
-              function arrayGenerator(el, items, htmlRes) { console.log(el, items, htmlRes);
+              function arrayGenerator(el, items, htmlRes) {
                 var elem = $(el);
                 if (elem.length) {
                   if(elem.hasClass('contenedor')) {
@@ -527,7 +527,8 @@ function agregarScriptContentTagFunction() {
 
 function agregarContentFromTags(contentTags) {
     let scriptTags = '';
-    scriptTags += `<script type="text/javascript">`;
+    scriptTags += `<script type="text/javascript">
+      window.addEventListener("DOMContentLoaded",function() {`;
     scriptTags += agregarScriptContentTagFunction();
     contentTags.forEach(function(ct) {
         let t = Tags.findOne({name: ct.tag}),
@@ -539,13 +540,20 @@ function agregarContentFromTags(contentTags) {
               //  relativeElems.forEach(function(re) {
                     scriptTags += `
                         (function () {
-                          var res = ${tagFunction}();
-                          res.forEach(function(r){
-                              //por cada uno de los resultados encontrados, llamo a generator
-                              arrayGenerator('#${ct.el}', ${printItems(relativeElems)}, r);
+                          var res = ${tagFunction}(this, function(results) {
+                              if (results.length>0) {
+                                results.forEach(function(r){
+                                    //por cada uno de los resultados encontrados, llamo a generator
+                                    arrayGenerator('#${ct.el}', ${printItems(relativeElems)}, r);
+                                });
+                                //al final tengo q borrar el contenedor original
+                                $('#${ct.el}').not('.cloned').remove();
+                              }
+                          },
+                          function(error){
+                            console.log(error);
                           });
-                          //al final tengo q borrar el contenedor original
-                          $('#${ct.el}').not('.cloned').remove();
+
                         })();`;
                 //});
             }
@@ -558,7 +566,7 @@ function agregarContentFromTags(contentTags) {
         }
 
       });
-      scriptTags += `</script>`
+      scriptTags += `});</script>`
       return scriptTags;
 }
 

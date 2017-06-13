@@ -57,3 +57,59 @@ Tags.insert(
     items: ['titulo', 'autor', 'editorial']
   }
 );
+Tags.insert(
+  {
+    name: 'diario-WOA',
+    text: 'TAG SET de WOA con info de noticias',
+    process: `function(context, callback) {
+      //This method is mandatory. It will be called by WOA when the API is ready
+	    context.initWOAscript = function(){
+        var commonUrl = "http://www.diarioregistrado.com/economia",
+            result = [];
+		      try{
+            	//Defining a IO template
+            	var newsTemplate = WOA.newInformationObjectTemplate({
+            		name: "Diario Registrado News", tag: "news", url: commonUrl,
+            		xpath: './/div[@id="frame-content"]/div[1]/div[1]/div[1]/section[1]/article'
+            	});
+            	//Add it a TITLE property
+            	newsTemplate.addProperty({
+            		name: "Title", tag: "title", url: commonUrl,
+            		xpath: 'div[1]/div[2]/div[1]/a[1]/h3[1]'
+            	});
+            	//Add it a CONTENT property
+            	newsTemplate.addProperty({
+            		name: "Content", tag: "content", url: commonUrl,
+            		xpath: 'div[1]/div[2]/div[1]/a[1]/p[1]'
+            	});
+            	//Add it a THUMBNAIL property
+            	newsTemplate.addProperty({
+            		name: "Image", tag: "thumbnail", url: commonUrl,
+            		xpath: 'div[1]/div[1]/a[1]/div[1]'
+            	});
+            	//Add it a TAG property
+            	newsTemplate.addProperty({
+            		name: "Tag", tag: "tag", url: commonUrl,
+            		xpath: 'div[1]/div[2]/div[1]/div[1]/h4[1]/a[1]'
+            	});
+            	//Apply a decorator & select some messages
+            	var decoratedTemplate = WOA.newDecorator("NewsDecorator", newsTemplate);
+            	decoratedTemplate.selectMessage("showRelatedTweets");
+            	decoratedTemplate.mapMessageParam("keywords", "Tag");
+
+            	//Retrieving Information Objects based on the templates
+              WOA.getInformationObjects(decoratedTemplate, function(ioses){
+                  for (var i = 0; i < ioses.length; i++) {
+                      result.push({
+                          'titulo': ioses[i].getPropertyByTagName("title").getValue()
+                      });
+                  }
+                  callback(result);
+              });
+          }catch(err){console.log(err);}
+        }
+    }`,
+    type: 'array',
+    items: ['titulo']
+  }
+);
