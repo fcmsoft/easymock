@@ -629,7 +629,9 @@ function deleteNodeEvent(e) {
     $('.node.active').popover('destroy');
     page.find('#'+id).remove();
     page.find('#etiqueta-'+id).remove();
+    page.find('#etiquetaContent-'+id).remove();
     Meteor.call('updatePageContent', Session.get('currentProjectId'), Session.get('currentPage'), page.html());
+    Meteor.call('removeElementTags', Session.get('currentProjectId'), Session.get('currentPage'), id);
 };
 
 function deleteContenedorEvent(e) {

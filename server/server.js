@@ -125,4 +125,11 @@ Meteor.methods({
          lastDate: new Date
      }});
    },
+   removeElementTags: function(projectId, idPage, elemId) {
+    ContentTags.remove({page: idPage, project: projectId, el: elemId});
+    Projects.update({_id:projectId},
+       {$set: {
+         lastDate: new Date
+     }});
+   },
 });
