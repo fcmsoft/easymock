@@ -4,68 +4,60 @@
 		<button type="button" class="close close-properties" aria-label="Close"><span aria-hidden="true" >&times;</span></button>
 	</div>
 
-			<div class="properties-grid-content hide">
+	<div class="properties-content hide">
+		<div class="row">
+			<div class="col-md-3"><input type="button" value="Borrar" class="btn btn-default deleteNode"/></div>
+		</div>
+		<div class="row">
+			<div class="col-md-12"><label>Nombre Elemento: </label><input type="text" value="" class="elementName"/></div>
+		</div>
+		<ul class="nav nav-tabs" role="tablist" id="properties-tabs">
+		    <li role="presentation" class="active"><a href="#styles" id="style-tab" role="tab" data-toggle="tab">Estilos</a></li>
+		    <li role="presentation"><a href="#specification" id ="specification-tab" role="tab" data-toggle="tab">Acciones</a></li>
+			<li role="presentation"><a href="#content-tags" id="content-tab" role="tab" data-toggle="tab">Tags de Contenido</a></li>
+		</ul>
+		<div class="tab-content">
+			<div role="tabpanel"  class="tab-pane active" id="styles">
 				<div class="row">
-					<div class="col-md-3"><input type="button" value="Borrar" class="btn btn-default deleteContenedor"/></div>
-				</div>
-				<div class="row">
-					<div class="col-md-12"><label>Nombre Elemento: </label><input type="text" value="" class="elementName"/></div>
-				</div>
-				<button type="button" class="btn btn-default applyEditText">Aplicar</button>
-			</div>
-
-			<div class="properties-content hide">
-				<div class="row">
-					<div class="col-md-3"><input type="button" value="Borrar" class="btn btn-default deleteNode"/></div>
-				</div>
-				<div class="row">
-					<div class="col-md-12"><label>Nombre Elemento: </label><input type="text" value="" class="elementName"/></div>
-				</div>
-
-				<ul class="nav nav-tabs" role="tablist" id="properties-tabs">
-				    <li role="presentation" class="active"><a href="#styles" id="style-tab" role="tab" data-toggle="tab">Estilos</a></li>
-				    <li role="presentation"><a href="#specification" id ="specification-tab" role="tab" data-toggle="tab">Acciones</a></li>
-				 </ul>
-				<div class="tab-content">
-					<div role="tabpanel"  class="tab-pane active" id="styles">
-						<div class="row">
-							<div class="col-md-12">
-								<form class="form-inline" id="properties-form">
-
-								</form>
-							  <button type="button" class="btn btn-default applyEditText">Aplicar</button>
-							</div>
-						</div>
-					</div>
-					<div role="tabpanel" class="tab-pane" id="specification">
-						<div class="row">
-							<div class="col-md-12">
-								<form class="form-inline" id="events-form">
-									<div class="row">
-										<div class="col-md-4">
-											Eventos:
-											<div id="events-list"></div>
-										</div>
-										<div class="col-md-4">
-											Operaciones:
-											<div id="operations-list"></div>
-										</div>
-										<div class="col-md-4">
-											Elementos:
-											<div id="elements-list"></div>
-										</div>
-									</div>
-									<div class="row">
-										<div class="col-md-12">
-											<textarea id="action" class="action" rows="3"></textarea>
-										</div>
-									</div>
-								</form>
-								<button type="button" class="btn btn-default applyOperations">Aplicar</button>
-							</div>
-						</div>
+					<div class="col-md-12">
+						<form class="form-inline" id="properties-form">
+						</form>
+						<button type="button" class="btn btn-default applyEditText">Aplicar</button>
 					</div>
 				</div>
-
 			</div>
+			<div role="tabpanel" class="tab-pane" id="specification">
+				<div class="row">
+					<div class="col-md-12">
+						<form class="form-inline" id="events-form">
+							<div class="row">
+								<div class="col-md-4">
+									Eventos:
+									<div id="events-list"></div>
+								</div>
+								<div class="col-md-4">
+									Operaciones:
+									<div id="operations-list"></div>
+								</div>
+								<div class="col-md-4">
+									Elementos:
+									<div id="elements-list"></div>
+								</div>
+							</div>
+						</form>
+						<button type="button" class="btn btn-default applyOperations">Aplicar</button>
+					</div>
+				</div>
+			</div>
+			<div role="tabpanel" class="tab-pane" id="content-tags">
+				<div class="row">
+					<div class="col-md-12">
+						<form class="form-inline" id="content-form">
+						</form>
+						<button type="button" class="btn btn-default applyContentTags">Aplicar</button>
+					</div>
+				</div>
+			</div>
+		</div>
+	</div>
 </template>

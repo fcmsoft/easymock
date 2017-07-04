@@ -11,6 +11,25 @@ Template.eachProjectInList.events({
     }
 });
 
+Template.eachPageInList.events({
+  "click .page-item": function(event, template){
+
+    Session.set('currentPage', this._id);
+
+    $('.pages-list-group a').removeClass('active');
+    $(template.firstNode).addClass('active');
+
+  },
+
+  'click .edit-page': function (e, tpl) {
+    e.preventDefault();
+    Session.set('currentPage', this._id);
+    $('#new-page-modal input').val(this._id);
+    $('#new-page-modal').modal('show');
+  },
+
+});
+
 Template.viewProjects.events({
     'click .yes-remove-project': function (e, tpl) {
       var idP =$('.delete-modal .idP').val();
@@ -47,20 +66,24 @@ Template.viewProjects.events({
 });
 
 Template.project.events({
-  'click .show-tags-button': function(e, tpl) {
-      clearSelection();
-      $('.tag').show();
-      $('.node').addClass('active');
-      $('.contenedor').addClass('active');
-  },
-  'click .hide-tags-button': function(e, tpl) {
-      $('.tag').hide();
-      $('.node').removeClass('active');
-      $('.contenedor').removeClass('active');
+  'click .elements-name-button': function(e, tpl) {
+      if (!$('.elements-name-button').hasClass('showing')) {
+        clearSelection();
+        $('.elements-name-button').addClass('showing');
+        $('.elements-name-button').val('Ocultar Elementos/Tags');
+        $('.etiqueta').show();
+        $('.etiquetaContent').show();
+        $('.node').addClass('active');
+        $('.contenedor').addClass('active');
+      } else {
+          hideElementsName();
+      }
   },
   'click .preview-button': function(e, tpl) {
       let script = '',
-          specifications = Specification.find({page : Session.get("currentPage")});
+          scriptTags = '',
+          specifications = Specification.find({page : Session.get("currentPage")}),
+          contentTags = ContentTags.find({page : Session.get("currentPage")});
       $('.node.active').popover('destroy');
       $('.node.active').removeClass('active');
       $('.contenedor.active').popover('destroy');
@@ -69,30 +92,54 @@ Template.project.events({
       $('body').removeClass('edit');
       $('.preview-button').hide();
       $('.edit-button').show();
-      $('.show-tags-button').hide();
-      $('.hide-tags-button').hide();
-
+      $('.elements-name-button').hide();
+      $('.etiquetaContent').hide();
+      $('.etiqueta').hide();
       // agregar acciones
-      specifications.forEach(function(s) {
+      $('body').append(agregarAcciones(specifications));
 
-        script += `<script type="text/javascript">
-                    $('#${s.el}').${s.event}(function(e){
-                        e.stopPropagation();
-                        console.log(e);
-                        $('#${s.element}').${s.operation}();
-                    });
-                  </script>`;
-      });
-      $('body').append(script);
+      // agregar tags de content
+      $('body').append(agregarContentFromTags(contentTags));
 
   },
   'click .edit-button': function(e, tpl) {
-      $('body').removeClass('preview');
-      $('body').addClass('edit');
-      $('.preview-button').show();
-      $('.edit-button').hide();
-      $('.show-tags-button').show();
-      $('.hide-tags-button').show();
+    // tengo q recargar la pagina, es mas facil q borrar los javascripts etc agregados
+      window.location.reload();
+  },
+
+  'click .export-button': function(e, tpl) {
+      let page = $('.page').clone()
+          uriContent = '',
+          script = '',
+          specifications = Specification.find({page : Session.get("currentPage")}),
+          contentTags = ContentTags.find({page : Session.get("currentPage")}),
+          content = `<!DOCTYPE html><html><head>
+            <title>Easy Mock</title>
+            <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css" integrity="sha384-BVYiiSIFeK1dGmJRAkycuHAHRg32OmUcww7on3RYdg4Va+PmSTsz/K68vbdEjh4u" crossorigin="anonymous">
+            <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap-theme.min.css" integrity="sha384-rHyoN1iRsVXV4nD0JutlnGaslCJuC7uwjduW9SVrLvRYooPp2bWYgmgJQIXwl/Sp" crossorigin="anonymous">
+            <script
+              src="https://code.jquery.com/jquery-3.2.1.min.js"
+              integrity="sha256-hwg4gsxgFZhOsEEamdOYGBf13FyQuiTwlAQgxVSNgt4="
+              crossorigin="anonymous">
+            </script>
+            <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js" integrity="sha384-Tc5IQib027qvyjSMfHjOMaLkfuWVxZxUPnCJA7l2mCWNIpG9mGCD8wGNIcPD7Txa" crossorigin="anonymous"></script>
+
+          </head><body><div class="container-fluid">`;
+
+      // agregar acciones
+      page.append(agregarAcciones(specifications));
+
+      // agregar tags de content
+      page.append(agregarContentFromTags(contentTags));
+
+      //eliminar las etiquetas
+      page.find('.etiqueta').remove();
+      page.find('.etiquetaContent').remove();
+
+      content = content + page.html() + script + '</div></body></html>';
+      uriContent = "data:application/octet-stream," + encodeURIComponent(content);
+      // TODO: ver si es posible asignar nombre y extension html
+      window.open(uriContent, 'neuesDokument');
   },
   'click .save-page': function (e, tpl) {
       e.preventDefault();
@@ -168,7 +215,7 @@ Template.project.events({
       e.originalEvent.dataTransfer.effectAllowed = "move";
   },
 
-  'dragenter .page': function (e, tpl) { console.log('ENTRE A DRAGENTER page');
+  'dragenter .page': function (e, tpl) {
       e.preventDefault();
       e.originalEvent.dataTransfer.dropEffect = "copy";
   },
@@ -199,10 +246,9 @@ Template.project.events({
     }
     //buscar el nodo anterior mas cercano
     nodeSelected = getPreviousNode(tpl.$('.page').children(), e.originalEvent.clientY);
-
     if (nodeSelected) {
         console.log('selecciono un nodo',page.find('#'+nodeSelected));
-        node.insertBefore(page.find('#'+nodeSelected));
+        node.insertAfter(page.find('#'+nodeSelected));
     } else {
         console.log('la mando abajo');
         page.append(node);
@@ -211,7 +257,7 @@ Template.project.events({
     Meteor.call('updatePageContent', Session.get('currentProjectId'), Session.get('currentPage'), page.html());
   },
 
-  'drop .contenedor .row .column': function (e, tpl) { console.log('entre a DROP Contenedor');
+  'drop .contenedor .row .column': function (e, tpl) {
     e.stopPropagation();
     var data = e.originalEvent.dataTransfer.getData('application/json');
     data = JSON.parse(data);
@@ -224,7 +270,7 @@ Template.project.events({
         nodoOriginIdentyfyByClass = nodoOriginIdentyfyByClass[2];
 
     e.preventDefault();
-
+console.log('next',nextId);
     if (data.origin === 'node') {
       node = page.find('#'+data.id).clone();
       page.find('#'+data.id).remove();
@@ -240,9 +286,9 @@ Template.project.events({
         console.log(page.find('#'+nodeSelected));
         node.insertBefore(page.find('#'+nodeSelected));
     } else {
-        console.log('la mando abajo', page.find('#'+$(e.currentTarget).attr('id')));
-        let nodoFinal = page.find('#'+$(e.currentTarget).parent().parent().attr('id')+ ' .row .' + nodoOriginIdentyfyByClass);
-        nodoFinal.append(node);
+        console.log('la mando abajo ID:', $(e.currentTarget).parent().parent().attr('id')+'-'+nodoOriginIdentyfyByClass+'-'+(nextId+1));
+        let nodoFinal = page.find('#'+$(e.currentTarget).parent().parent().attr('id')+ ' .row .' + nodoOriginIdentyfyByClass).first();
+        nodoFinal.append(node); console.log('inserta en', nodoFinal);
     }
 
    Meteor.call('updatePageContent', Session.get('currentProjectId'), Session.get('currentPage'), page.html());
@@ -252,26 +298,51 @@ Template.project.events({
       // si hago clic en una parte de la pagina q no es un nodo, quiero des-seleccionar
       e.stopPropagation();
       clearSelection();
+      hideElementsName();
   },
 
-  'click .node': function (e, tpl) { console.log('edittando');
+  'click .node': function (e, tpl) {
+      editEvent(e, tpl);
+  },
+
+  'click .contenedor': function (e, tpl) {
+      editEvent(e, tpl);
+  },
+
+  'mouseover .contenedor, mouseover .node': function (e, tpl) {
+      e.stopPropagation();
+      //clearSelection(); console.log('entre a hover', e.currentTarget);
+      //$(e.currentTarget).addClass('active');
+  },
+
+});
+
+function editEvent(e, tpl) {
       e.stopPropagation();
       clearSelection();
       $(e.currentTarget).addClass('active');
 
-      let type = $('.node.active').attr('data-type'),
-          widget = Widgets.findOne({name : type}),
-          propertiesList = widget.styles,
+      let isWidget = $(e.currentTarget).hasClass('node'),
+          elemTypeClass = isWidget ? '.node' : '.contenedor',
+          elemId = $(e.currentTarget).attr('id'),
+          type = $(elemTypeClass + '.active').attr('data-type'),
+          elem = isWidget ? Widgets.findOne({name : type}) : Grid.findOne({name : type}),
+          propertiesList = elem.styles,
           actions = EventList.find(),
           operations = OperationList.find(),
-          elements = $('.tag:hidden');
+          tags = Tags.find(),
+          tagsDisponibles = getTagsDisponibles(tags, isWidget),
+          elements = $('.etiqueta:hidden'),
+          contentTag = ContentTags.findOne({page : Session.get("currentPage"), el: elemId}),
+          especificacion = Specification.findOne({page : Session.get("currentPage"), el: elemId}),
           propertiesHtml = '',
           actionsHtml = '',
           operationsHtml = '',
           elementsHtml = '',
+          tagsHtlm = '',
           options = {
                 title    : function(){
-                    return $('.properties-title').html();
+                    return $('.properties-title').html() + (isWidget ? 'Widget' : 'Grid');
                 },
                 container: 'body',
                 html     : true,
@@ -281,25 +352,43 @@ Template.project.events({
                 }
               };
 
-      actionsHtml = `<select class="actions"><option value="-1"> Seleccione...</option>`;
-      actions.forEach(function(action){
-        actionsHtml += `<option value="${action.event}"> ${action.event}</option>`;
+      // armar lista de tags disponibles
+      tagsHtml = `<select class="content-tags form-control"><option value="-1"> Seleccione...</option>`;
+      tagsDisponibles.forEach(function(tag) {
+        let tagState = '',
+            tagData = tag.split('.'),
+            typeTagCompuesta = tagData.length > 1;
+        if (typeTagCompuesta) {
+            tagState = (contentTag && tagData[0] === contentTag.tag && tagData[1] === contentTag.item) ? 'selected' : '';
+        } else {
+            tagState = (contentTag && tagData[0] === contentTag.tag) ? 'selected' : '';
+        }
+        tagsHtml += `<option value="${tag}" ${tagState}> ${tag}</option>`;
+      });
+      tagsHtml += `</select><div class="tag-description"></div>`;
+
+      actionsHtml = `<select class="actions form-control"><option value="-1"> Seleccione...</option>`;
+      actions.forEach(function(action) {
+        let state = (especificacion && especificacion.event === action.event) ? 'selected' : '';
+        actionsHtml += `<option value="${action.event}" ${state}> ${action.event}</option>`;
       });
       actionsHtml += `</select>`;
-      operationsHtml = `<select class="operations"><option value="-1"> Seleccione...</option>`;
-      operations.forEach(function(op){
-        operationsHtml += `<option value="${op.name}"> ${op.name}</option>`;
+      operationsHtml = `<select class="operations form-control"><option value="-1"> Seleccione...</option>`;
+      operations.forEach(function(op) {
+        let state = (especificacion && especificacion.operation === op.name) ? 'selected' : '';
+        operationsHtml += `<option value="${op.name}" ${state}> ${op.name}</option>`;
       });
       operationsHtml += `</select>`;
-      propertiesList.forEach(function(prop){
+      propertiesList.forEach(function(prop) {
         let value = $(e.currentTarget).children().css(prop.name);
         propertiesHtml += `<div class="form-group properties-form-group"><label for="edit-${prop.name}">
           ${prop.label}</label><input type="text" value="${value}" class="form-control ${prop.inputClass}"></div>`;
       });
-      elementsHtml = `<select class="elements"><option value="-1"> Seleccione...</option>`;
+      elementsHtml = `<select class="elements form-control"><option value="-1"> Seleccione...</option>`;
       elements.map(function(index, el){
-          let id = (el.id).substring(4);
-          elementsHtml += `<option value="${id}"> ${$(el).text()}</option>`;
+          let id = (el.id).substring(9),
+              state = (especificacion && especificacion.element === id) ? 'selected' : '';
+          elementsHtml += `<option value="${id}" ${state}> ${$(el).text()}</option>`;
       });
       elementsHtml += `</select>`;
 
@@ -311,71 +400,188 @@ Template.project.events({
       $('#operations-list').append(operationsHtml);
       $('#elements-list').html('');
       $('#elements-list').append(elementsHtml);
-      if (widget.includeText) {
+      $('#content-form').html('');
+      $('#content-form').append(tagsHtml);
+      if (elem.includeText) {
         $('#properties-form').prepend('<div class="form-group properties-form-group"><label for="editText">Texto</label><input type="text" value="" name="editText" class="editText form-control"></div>');
       }
 
-      $('.node.active').popover(options)
+      $(elemTypeClass + '.active').popover(options)
         .popover('show')
         .on('shown.bs.popover', function () {
           $('.close-properties').on('click', function(e) {
               e.stopPropagation();
               $('.node.active').popover('destroy');
           });
-          $('.deleteNode').on('click', {id: $(e.currentTarget).attr('id')}, deleteNodeEvent);
-          $('.applyEditText').on('click',  {id: $(e.currentTarget).attr('id')}, editNodeEvent);
-          $('.applyOperations').on('click',  {id: $(e.currentTarget).attr('id')}, editOperations);
+          $('.deleteNode').on('click', {id: elemId}, isWidget ? deleteNodeEvent : deleteContenedorEvent);
+          $('.applyEditText').on('click',  {id: elemId}, isWidget ? editNodeEvent : editGridEvent);
+          $('.applyOperations').on('click',  {id: elemId, isWidget: isWidget}, editOperations);
+          $('.applyContentTags').on('click',  {id: elemId, isWidget: isWidget}, editContentTags);
           // hago esto manualmente en vez de usar .tab() porque tengo los id en la plantilla y rompen
           $('.popover #properties-tabs a').on('click', function(e) {
               let id = $(this).attr('href');
-              $('.tab-pane').removeClass('active');
+              $('.tab-pane').removeClass('active');  console.log('click en tab', id);
               $('.popover ' + id).addClass('active');
+          });
+          // selecciono la primer tab para que no quede marcada la anterior seleccionada
+          $('a#style-tab').click();
+
+          $('.popover .content-tags').on('click', function(e) {
+              // se selecciono una tag de contenido
+              // muestro debajo de la lista la descripcion
+              let selTag = $('.popover .content-tags').val(),
+                  tagParts = selTag.split('.'),
+                  tag = Tags.findOne({name: tagParts[0]});
+
+              $('.tag-description').html(tag ? tag.text : '');
           });
           $('.editText').val( $(e.currentTarget).text());
           $('.elementName').val( $(e.currentTarget).attr('data-element-name'));
         });
-  },
+  }
 
-  'mouseover .contenedor, mouseover .node': function (e, tpl) {
-      e.stopPropagation();
-      //clearSelection(); console.log('entre a hover', e.currentTarget);
-      //$(e.currentTarget).addClass('active');
-  },
-
-  'click .contenedor': function (e, tpl) {
-      e.stopPropagation();
-      clearSelection();
-      $(e.currentTarget).addClass('active');
-      var options = {
-            title    : function(){
-                return $('.properties-title').html();
-            },
-            container: 'body',
-            html     : true,
-            placement: 'auto bottom',
-            content  : function(){
-                return $('.properties-grid-content').html();
-            }
-      };
-      var contenedorActual = e.currentTarget;
-      $('.contenedor.active').popover(options)
-        .popover('show')
-        .on('shown.bs.popover', function () {
-          $('.close-properties').on('click', function(e){
-              e.stopPropagation();
-              $('.contenedor.active').popover('destroy');
-          });
-          $('.elementName').val( $(e.currentTarget).attr('data-element-name'));
-          $('.applyEditText').on('click',  {id: $(e.currentTarget).attr('id')}, editGridEvent);
-          $('.deleteContenedor').on('click', {contenedor: contenedorActual}, deleteContenedorEvent);
+//retorna lista de tags de acuerdo a si es grid o widget
+function getTagsDisponibles(tags, isWidget) {
+    let res = [];
+    if (isWidget) {
+        tags.forEach(function(t){
+          switch (t.type) {
+            case 'string':
+              res.push(t.name);
+              break;
+            case 'object':
+              t.items.forEach(function (item) {
+                res.push(t.name + '.' + item);
+              });
+              break;
+            case 'array':
+              t.items.forEach(function(item) {
+                res.push(t.name + '*.' + item);
+              });
+              break;
+          }
         });
-  },
-});
+    } else {
+      //es contenedor
+      tags.forEach(function(t){
+        switch (t.type) {
+          case 'string':
+            //no se puede agregar directamente a grid
+            break;
+          case 'object':
+            res.push(t.name);
+            break;
+          case 'array':
+            res.push(t.name);
+            break;
+        }
+      });
+    }
+    return res;
+}
+
+  // agregar acciones
+function agregarAcciones(specifications) {
+    let script = '';
+    specifications.forEach(function(s) {
+        script += `<script type="text/javascript">
+                    $('#${s.el}').${s.event}(function(e){
+                        e.stopPropagation();
+                        $('#${s.element}').${s.operation}();
+                    });
+                  </script>`;
+      });
+      return script;
+}
+
+function agregarScriptContentTagFunction() {
+    return `
+            function generator(ct, htmlRes) {
+                  var elem = $('#' + ct.el);
+                  if (elem.length) {
+                    //es un elem comun
+                        if (typeof htmlRes === 'object') {
+                          //si el resultado es un objeto, solo tomo la propiedad q corresponde
+                          htmlRes = htmlRes[ct.item];
+                        }
+                        elem.html(elem.html().replace(elem.text(),htmlRes));
+                  }
+              }
+
+              //es un grid con array, plantilla a repetir
+              function arrayGenerator(el, items, htmlRes) {
+                var elem = $(el);
+                if (elem.length) {
+                  if(elem.hasClass('contenedor')) {
+                    var elContent = elem.clone();
+                    elContent.addClass('cloned');
+                    items.forEach(function(item){
+                      var e = elContent.find(item.el);
+                      e.html(e.html().replace(e.text(),htmlRes[item.item]));
+                    });
+                    elem.after(elContent);
+                  }
+                }
+              }`;
+}
+
+function agregarContentFromTags(contentTags) {
+    let scriptTags = '';
+    scriptTags += `<script type="text/javascript">
+      window.addEventListener("DOMContentLoaded",function() {`;
+    scriptTags += agregarScriptContentTagFunction();
+    contentTags.forEach(function(ct) {
+        let t = Tags.findOne({name: ct.tag}),
+            tagFunction = t.process,
+            relativeElems = [];
+        if (t.type === 'array') {
+            if (ct.item === 'undefined' || ct.item === ''){
+                relativeElems = ContentTags.find({page : Session.get("currentPage"), tag: ct.tag, item: {$ne: ''}}).fetch();
+              //  relativeElems.forEach(function(re) {
+                    scriptTags += `
+                        (function () {
+                          var res = ${tagFunction}(this, function(results) {
+                              if (results.length>0) {
+                                results.forEach(function(r){
+                                    //por cada uno de los resultados encontrados, llamo a generator
+                                    arrayGenerator('#${ct.el}', ${printItems(relativeElems)}, r);
+                                });
+                                //al final tengo q borrar el contenedor original
+                                $('#${ct.el}').not('.cloned').remove();
+                              }
+                          },
+                          function(error){
+                            console.log(error);
+                          });
+
+                        })();`;
+                //});
+            }
+        } else {
+          scriptTags += `
+              (function () {
+                var res = ${tagFunction}();
+                generator({tag: '${ct.tag}', el: '${ct.el}', item: '${ct.item}'}, res);
+              })();`;
+        }
+
+      });
+      scriptTags += `});</script>`
+      return scriptTags;
+}
+
+function printItems(elements) {
+  let elems = '[';
+  elements.forEach(function(e){
+    elems += `{'item':'${e.item}', el: '#${e.el}'},`;
+  });
+  return elems + ']';
+}
 
 /*
 * Create a new node to insert in page
 */
-var createNode = function(data, nodeId) {
+function createNode(data, nodeId) {
   let node = $("<div/>", {
           class: (data.origin === 'widget') ? 'node' : 'contenedor',
       }),
@@ -395,7 +601,7 @@ var createNode = function(data, nodeId) {
   return node;
 }
 
-var getPreviousNode = function(nodes, y) {
+function getPreviousNode(nodes, y) {
   var nodeSelected;
   //buscar el nodo anterior mas cercano
   if (nodes.length > 1) {
@@ -417,26 +623,44 @@ var getPosition = function(el) {
   }
 };
 
-var deleteNodeEvent = function(e) {
+function deleteNodeEvent(e) {
     var page = $('.page').clone(),
         id = e.data.id;
     $('.node.active').popover('destroy');
     page.find('#'+id).remove();
-    page.find('#tag-'+id).remove();
+    page.find('#etiqueta-'+id).remove();
     Meteor.call('updatePageContent', Session.get('currentProjectId'), Session.get('currentPage'), page.html());
 };
 
-var deleteContenedorEvent = function(e) {
+function deleteContenedorEvent(e) {
     var page = $('.page').clone(),
-        id=$(e.data.contenedor).attr('id');
+        id = e.data.id;
     $('.contenedor.active').popover('destroy');
     console.log('Borrando contenedor:', e.data.contenedor, id);
     page.find('#'+id).remove();
-    page.find('#tag-'+id).remove();
+    page.find('#etiqueta-'+id).remove();
     Meteor.call('updatePageContent', Session.get('currentProjectId'), Session.get('currentPage'), page.html());
 };
 
-var editNodeEvent = function(e) {
+function getEtiquetaContent(page, id, contentTag){
+    let etiquetaContent = page.find('#etiquetaContent-' + id).length > 0 ?
+      page.find('#etiquetaContent-' + id) :
+      $("<div/>", {
+        class: 'etiquetaContent',
+        id: 'etiquetaContent-' + id
+      }),
+      type = Tags.findOne({name: contentTag.tag}).type,
+      tagText = contentTag.tag;
+    if (type === 'object') {
+      tagText += '.' + contentTag.item;
+    }
+    if (type === 'array') {
+      tagText += '*.' + contentTag.item;
+    }
+    return etiquetaContent.html('<p>Data('+tagText+')</p>');
+}
+
+function editNodeEvent(e) {
     let page = $('.page').clone(),
         id = e.data.id,
         node = page.find('#'+id),
@@ -444,12 +668,13 @@ var editNodeEvent = function(e) {
         widget = Widgets.findOne({name : type}),
         propertiesList = widget.styles,
         styles = {},
-        tag = page.find('#tag-'+id).length > 0 ?
-            page.find('#tag-'+id) :
+        etiqueta = page.find('#etiqueta-' + id).length > 0 ?
+            page.find('#etiqueta-' + id) :
             $("<div/>", {
-              class: 'tag',
-              id: 'tag-' + id
-            });
+              class: 'etiqueta',
+              id: 'etiqueta-' + id
+            }),
+        contentTag = ContentTags.findOne({page : Session.get("currentPage"), el: id});
 
     propertiesList.forEach(function(prop) {
       styles[prop.name] = $('.popover .' + prop.inputClass).val();
@@ -461,17 +686,23 @@ var editNodeEvent = function(e) {
       node.attr('data-element-name', $('.popover .elementName').val());
     }
     if ($('.popover .elementName').val().length > 0) {
-      tag.html('<p>'+$('.popover .elementName').val()+'</p>');
-      node.before(tag);
+      etiqueta.html('<p>'+$('.popover .elementName').val()+'</p>');
+      node.before(etiqueta);
     }
+    // agregar texto a la etiqueta de contenido (tag) si tiene
+    if (contentTag) {
+      node.before(getEtiquetaContent(page, id, contentTag));
+    }
+
     node.children().css(styles);
 
     Meteor.call('updatePageContent', Session.get('currentProjectId'), Session.get('currentPage'), page.html());
     $('.node.active').popover('destroy');
 };
 
-var editOperations = function(e) {
-    let action = {
+function editOperations(e) {
+    let elemTypeClass = e.data.isWidget ? '.node' : '.contenedor',
+        action = {
           project: Session.get('currentProjectId'),
           page: Session.get('currentPage'),
           el: e.data.id,
@@ -482,14 +713,34 @@ var editOperations = function(e) {
 
     if (action.event != '-1' && action.operation != '-1' && action.element != '-1') {
       Meteor.call('addAction',  Session.get('currentProjectId'), action);
-      $('.node.active').popover('destroy');
+      $(elemTypeClass + '.active').popover('destroy');
     } else {
       //show error
     }
-
 };
 
-var editGridEvent = function(e) {
+function editContentTags(e) {
+    let elemTypeClass = e.data.isWidget ? '.node' : '.contenedor',
+        selTag = $('.popover .content-tags').val(),
+        tagParts = selTag.split('.'),
+        tag = {
+          project: Session.get('currentProjectId'),
+          page: Session.get('currentPage'),
+          el: e.data.id,
+          tag: tagParts[0].replace('*', ''),
+          item: tagParts[1] || ''
+        };
+        console.log(tag);
+    if (tag.tag != '-1') {
+      Meteor.call('addTag', tag);
+    } else {
+      //selecciono ninguno, borro lo q tenia
+      Meteor.call('deleteTag',  tag);
+    }
+    $(elemTypeClass + '.active').popover('destroy');
+};
+
+function editGridEvent(e) {
     let page = $('.page').clone(),
         id = e.data.id,
         element = page.find('#'+id),
@@ -497,11 +748,18 @@ var editGridEvent = function(e) {
         gridType = Grid.findOne({name : type}),
         propertiesList = gridType.styles,
         styles = {},
-        tag = page.find('#tag-'+id).length > 0 ?
-            page.find('#tag-'+id) :
+        contentTag = ContentTags.findOne({page : Session.get("currentPage"), el: id}),
+        etiquetaContent = page.find('#etiquetaContent-' + id).length > 0 ?
+            page.find('#etiquetaContent-' + id) :
             $("<div/>", {
-              class: 'tag',
-              id: 'tag-' + id
+              class: 'etiquetaContent',
+              id: 'etiquetaContent-' + id
+            }),
+        etiqueta = page.find('#etiqueta-'+id).length > 0 ?
+            page.find('#etiqueta-'+id) :
+            $("<div/>", {
+              class: 'etiqueta',
+              id: 'etiqueta-' + id
             });
 
     propertiesList.forEach(function(prop) {
@@ -510,38 +768,35 @@ var editGridEvent = function(e) {
 
     if ( $('.popover .elementName').val().length > 0) {
       element.attr('data-element-name', $('.popover .elementName').val());
+      etiqueta.html('<p>'+$('.popover .elementName').val()+'</p>');
+      element.before(etiqueta);
     }
-    tag.html('<p>'+$('.popover .elementName').val()+'</p>');
-    element.before(tag);
+
+    // agregar texto a la etiqueta de contenido (tag) si tiene
+    if (contentTag) {
+      etiquetaContent.html('<p>Data('+contentTag.tag+')</p>');
+      element.before(etiquetaContent);
+    }
     element.children().css(styles);
 
     Meteor.call('updatePageContent', Session.get('currentProjectId'), Session.get('currentPage'), page.html());
     $('.contenedor.active').popover('destroy');
 };
 
-var clearSelection = function(){
-  $('.node.active').popover('destroy');
-  $('.node.active').removeClass('active');
-  $('.contenedor.active').popover('destroy');
-  $('.contenedor.active').removeClass('active');
-  $('.tag').hide();
+function hideElementsName() {
+    $('.elements-name-button').removeClass('showing');
+    $('.elements-name-button').val('Ver Elementos/Tags');
+    $('.etiqueta').hide();
+    $('.etiquetaContent').hide();
+    $('.node').removeClass('active');
+    $('.contenedor').removeClass('active');
+}
+
+function clearSelection() {
+    $('.node.active').popover('destroy');
+    $('.node.active').removeClass('active');
+    $('.contenedor.active').popover('destroy');
+    $('.contenedor.active').removeClass('active');
+    $('.etiqueta').hide();
+    $('.etiquetaContent').hide();
 };
-
-Template.eachPageInList.events({
-  "click .page-item": function(event, template){
-
-    Session.set('currentPage', this._id);
-
-    $('.pages-list-group a').removeClass('active');
-    $(template.firstNode).addClass('active');
-
-  },
-
-  'click .edit-page': function (e, tpl) {
-    e.preventDefault();
-    Session.set('currentPage', this._id);
-    $('#new-page-modal input').val(this._id);
-    $('#new-page-modal').modal('show');
-  },
-
-});

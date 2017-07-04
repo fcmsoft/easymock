@@ -121,6 +121,10 @@ body.builder {
     position: relative;
 }
 
+.builder.preview .page {
+    padding: 0;
+}
+
 .popover-content .row {
     padding-bottom: 15px;
     border-bottom: 1px solid #ebebeb;
@@ -142,6 +146,13 @@ body.builder {
 .popover-content .row:last-child {
     border: none;
 }
+.tab-pane .form-inline {
+    margin: 20px 0;
+}
+.tag-description {
+  margin: 10px;
+}
+
 /** widgets */
 .widget {
     margin-bottom: 5px;
@@ -150,9 +161,12 @@ body.builder {
 /** NODE STYLE ***/
 .node {
     padding: 4px;
-    display: inline-block;
+  /*  display: inline-block;*/
 }
-.node.active , .contenedor.active {
+.contenedor.active {
+    border: 1px dotted green;
+}
+.node.active {
     border: 1px dotted red;
 }
 .action {
@@ -176,12 +190,9 @@ body.builder {
 .contenedor .row {
   margin: 10px 0;
 }
+
 /** properties panel **/
-.properties {
-
-}
-
-.applyEditText {
+.tab-pane .btn {
   margin-top: 20px;
   float: right;
   margin-bottom: 15px;
@@ -191,9 +202,9 @@ body.builder {
   margin-top: 10px;
 }
 
-.tag {
+.etiquetaContent {
   float: right;
-  border: 1px solid blue;
+  border: 1px solid darkred;
   margin: 0;
   margin-top: -8px;
   margin-right: -8px;
@@ -201,7 +212,18 @@ body.builder {
   background-color: #CCC;
 }
 
-.tag p {
+.etiqueta {
+  float: right;
+  border: 1px solid blue;
+  margin: 0;
+  margin-top: -8px;
+  margin-right: -8px;
+  margin-left: 15px;
+  padding: 3px;
+  background-color: #CCC;
+}
+
+.etiqueta p, .etiquetaContent p {
   padding: 0;
   margin: 0;
   font-size: 12px;
