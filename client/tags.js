@@ -59,57 +59,52 @@ Tags.insert(
 );
 Tags.insert(
   {
+    config: woa_config || {},
     name: 'diario-WOA',
     text: 'TAG SET de WOA con info de noticias',
-    process: `function(context, callback) {
+    process: `function(context, config, callback) {
       //This method is mandatory. It will be called by WOA when the API is ready
-	    context.initWOAscript = function(){
-        var commonUrl = "http://www.diarioregistrado.com/economia",
-            result = [];
+	    context.initWOAscript = function() {
+        var commonUrl = config.commonUrl,
+            result = [],
+            decoratedTemplate = {};
+
 		      try{
             	//Defining a IO template
             	var newsTemplate = WOA.newInformationObjectTemplate({
-            		name: "Diario Registrado News", tag: "news", url: commonUrl,
-            		xpath: './/div[@id="frame-content"]/div[1]/div[1]/div[1]/section[1]/article'
+            		name: config.newsTemplate.name, tag: config.newsTemplate.tag, url: commonUrl,
+            		xpath: config.newsTemplate.xpath
             	});
-            	//Add it a TITLE property
-            	newsTemplate.addProperty({
-            		name: "Title", tag: "title", url: commonUrl,
-            		xpath: 'div[1]/div[2]/div[1]/a[1]/h3[1]'
-            	});
-            	//Add it a CONTENT property
-            	newsTemplate.addProperty({
-            		name: "Content", tag: "content", url: commonUrl,
-            		xpath: 'div[1]/div[2]/div[1]/a[1]/p[1]'
-            	});
-            	//Add it a THUMBNAIL property
-            	newsTemplate.addProperty({
-            		name: "Image", tag: "thumbnail", url: commonUrl,
-            		xpath: 'div[1]/div[1]/a[1]/div[1]'
-            	});
-            	//Add it a TAG property
-            	newsTemplate.addProperty({
-            		name: "Tag", tag: "tag", url: commonUrl,
-            		xpath: 'div[1]/div[2]/div[1]/div[1]/h4[1]/a[1]'
-            	});
-            	//Apply a decorator & select some messages
-            	var decoratedTemplate = WOA.newDecorator("NewsDecorator", newsTemplate);
-            	decoratedTemplate.selectMessage("showRelatedTweets");
-            	decoratedTemplate.mapMessageParam("keywords", "Tag");
-
+            	//Add properties
+              config.properties.forEach(function(prop) {
+                  newsTemplate.addProperty({
+                    name: prop.name, tag: prop.tag, url: commonUrl,
+                    xpath: prop.xpath
+                  });
+              });
+            	if (config.decoratedTemplate) {
+              	//Apply a decorator & select some messages
+              	decoratedTemplate = WOA.newDecorator("NewsDecorator", newsTemplate);
+              	decoratedTemplate.selectMessage(config.decoratedTemplate.selectMessage);
+              	decoratedTemplate.mapMessageParam(
+                  config.decoratedTemplate.mapMessageParam.key,
+                  config.decoratedTemplate.mapMessageParam.value);
+              }
             	//Retrieving Information Objects based on the templates
-              WOA.getInformationObjects(decoratedTemplate, function(ioses){
+              WOA.getInformationObjects(decoratedTemplate, function(ioses) {
                   for (var i = 0; i < ioses.length; i++) {
-                      result.push({
-                          'titulo': ioses[i].getPropertyByTagName("title").getValue()
+                      let res = {};
+                      config.properties.forEach(function(p){ console.log(p);
+                        res[p.tag] = ioses[i].getPropertyByTagName(p.tag).getValue();
                       });
-                  }
+                      result.push(res);
+                  };
                   callback(result);
               });
           }catch(err){console.log(err);}
         }
     }`,
     type: 'array',
-    items: ['titulo']
+    items: ['title', 'content', 'image', 'tag']
   }
 );

@@ -125,4 +125,10 @@ Meteor.methods({
          lastDate: new Date
      }});
    },
+   readConfig: function(file) {
+     //return Assets.getText(file);
+     return  new Promise( ( resolve, reject ) => {
+       resolve(JSON.parse(Assets.getText(file)));
+   });
+ }
 });
