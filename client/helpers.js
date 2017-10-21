@@ -27,6 +27,9 @@ Template.project.helpers({
   grid: function(){
     return Grid.find();
   },
+  tags: function(){
+    return Tags.find();
+  },
   currentProjectPages: function() {
     return Pages.find({projectId: Session.get('currentProjectId')});
   },

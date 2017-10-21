@@ -1,6 +1,7 @@
 Projects = new Meteor.Collection('projects');
 Pages = new Meteor.Collection('pages');
 Specification = new Meteor.Collection('specification');
+ContentTags = new Meteor.Collection('tags');
 
 Meteor.subscribe('projects', function() {
 	$('body').addClass('loaded');
@@ -17,6 +18,13 @@ Meteor.subscribe('pages', function() {
 });
 
 Meteor.subscribe('specification', function() {
+	$('body').addClass('loaded');
+	setTimeout(function(){
+		$('#content').removeClass('hidden');
+	}, 1000);
+});
+
+Meteor.subscribe('tags', function() {
 	$('body').addClass('loaded');
 	setTimeout(function(){
 		$('#content').removeClass('hidden');
