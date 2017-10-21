@@ -534,29 +534,28 @@ function agregarContentFromTags(contentTags) {
         let t = Tags.findOne({name: ct.tag}),
             tagFunction = t.process,
             relativeElems = [];
-        if (t.type === 'array') {
-            if (ct.item === 'undefined' || ct.item === ''){
-                relativeElems = ContentTags.find({page : Session.get("currentPage"), tag: ct.tag, item: {$ne: ''}}).fetch();
-              //  relativeElems.forEach(function(re) {
-                    scriptTags += `
-                        (function () {
-                          var res = ${tagFunction}(this, function(results) {
-                              if (results.length>0) {
-                                results.forEach(function(r){
-                                    //por cada uno de los resultados encontrados, llamo a generator
-                                    arrayGenerator('#${ct.el}', ${printItems(relativeElems)}, r);
-                                });
-                                //al final tengo q borrar el contenedor original
-                                $('#${ct.el}').not('.cloned').remove();
-                              }
-                          },
-                          function(error){
-                            console.log(error);
-                          });
 
-                        })();`;
-                //});
-            }
+        if (t.type === 'array') {
+              tagConfig = t.config || {};
+              if (ct.item === 'undefined' || ct.item === '') {
+                  relativeElems = ContentTags.find({page : Session.get("currentPage"), tag: ct.tag, item: {$ne: ''}}).fetch();
+                  scriptTags += `
+                          (function () {
+                            var res = ${tagFunction}(this, ${tagConfig}, function(results) {
+                                if (results.length>0) {
+                                  results.forEach(function(r) {
+                                      //por cada uno de los resultados encontrados, llamo a generator
+                                      arrayGenerator('#${ct.el}', ${printItems(relativeElems)}, r);
+                                  });
+                                  //al final tengo q borrar el contenedor original
+                                  $('#${ct.el}').not('.cloned').remove();
+                                }
+                            },
+                            function(error){
+                              console.log(error);
+                            });
+                          })();`;
+                        }
         } else {
           scriptTags += `
               (function () {

@@ -132,4 +132,11 @@ Meteor.methods({
          lastDate: new Date
      }});
    },
+   //revisar creo q no se usa
+   readConfig: function(file) {
+     //return Assets.getText(file);
+     return  new Promise( ( resolve, reject ) => {
+       resolve(JSON.parse(Assets.getText(file)));
+   });
+ }
 });
