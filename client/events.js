@@ -79,6 +79,7 @@ Template.project.events({
           hideElementsName();
       }
   },
+
   'click .preview-button': function(e, tpl) {
       let script = '',
           scriptTags = '',
@@ -102,6 +103,7 @@ Template.project.events({
       $('body').append(agregarContentFromTags(contentTags));
 
   },
+
   'click .edit-button': function(e, tpl) {
     // tengo q recargar la pagina, es mas facil q borrar los javascripts etc agregados
       window.location.reload();
@@ -123,8 +125,79 @@ Template.project.events({
               crossorigin="anonymous">
             </script>
             <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js" integrity="sha384-Tc5IQib027qvyjSMfHjOMaLkfuWVxZxUPnCJA7l2mCWNIpG9mGCD8wGNIcPD7Txa" crossorigin="anonymous"></script>
-
-          </head><body><div class="container-fluid">`;
+            <style>
+            /* WOA loader */
+            .loader {
+               color: #000;
+               font-size: 20px;
+               margin: 100px auto;
+               width: 1em;
+               height: 1em;
+               border-radius: 50%;
+               position: relative;
+               text-indent: -9999em;
+               -webkit-animation: load4 1.3s infinite linear;
+               animation: load4 1.3s infinite linear;
+               -webkit-transform: translateZ(0);
+               -ms-transform: translateZ(0);
+               transform: translateZ(0);
+             }
+             @-webkit-keyframes load4 {
+               0%,
+               100% {
+                 box-shadow: 0 -3em 0 0.2em, 2em -2em 0 0em, 3em 0 0 -1em, 2em 2em 0 -1em, 0 3em 0 -1em, -2em 2em 0 -1em, -3em 0 0 -1em, -2em -2em 0 0;
+               }
+               12.5% {
+                 box-shadow: 0 -3em 0 0, 2em -2em 0 0.2em, 3em 0 0 0, 2em 2em 0 -1em, 0 3em 0 -1em, -2em 2em 0 -1em, -3em 0 0 -1em, -2em -2em 0 -1em;
+               }
+               25% {
+                 box-shadow: 0 -3em 0 -0.5em, 2em -2em 0 0, 3em 0 0 0.2em, 2em 2em 0 0, 0 3em 0 -1em, -2em 2em 0 -1em, -3em 0 0 -1em, -2em -2em 0 -1em;
+               }
+               37.5% {
+                 box-shadow: 0 -3em 0 -1em, 2em -2em 0 -1em, 3em 0em 0 0, 2em 2em 0 0.2em, 0 3em 0 0em, -2em 2em 0 -1em, -3em 0em 0 -1em, -2em -2em 0 -1em;
+               }
+               50% {
+                 box-shadow: 0 -3em 0 -1em, 2em -2em 0 -1em, 3em 0 0 -1em, 2em 2em 0 0em, 0 3em 0 0.2em, -2em 2em 0 0, -3em 0em 0 -1em, -2em -2em 0 -1em;
+               }
+               62.5% {
+                 box-shadow: 0 -3em 0 -1em, 2em -2em 0 -1em, 3em 0 0 -1em, 2em 2em 0 -1em, 0 3em 0 0, -2em 2em 0 0.2em, -3em 0 0 0, -2em -2em 0 -1em;
+               }
+               75% {
+                 box-shadow: 0em -3em 0 -1em, 2em -2em 0 -1em, 3em 0em 0 -1em, 2em 2em 0 -1em, 0 3em 0 -1em, -2em 2em 0 0, -3em 0em 0 0.2em, -2em -2em 0 0;
+               }
+               87.5% {
+                 box-shadow: 0em -3em 0 0, 2em -2em 0 -1em, 3em 0 0 -1em, 2em 2em 0 -1em, 0 3em 0 -1em, -2em 2em 0 0, -3em 0em 0 0, -2em -2em 0 0.2em;
+               }
+             }
+             @keyframes load4 {
+               0%,
+               100% {
+                 box-shadow: 0 -3em 0 0.2em, 2em -2em 0 0em, 3em 0 0 -1em, 2em 2em 0 -1em, 0 3em 0 -1em, -2em 2em 0 -1em, -3em 0 0 -1em, -2em -2em 0 0;
+               }
+               12.5% {
+                 box-shadow: 0 -3em 0 0, 2em -2em 0 0.2em, 3em 0 0 0, 2em 2em 0 -1em, 0 3em 0 -1em, -2em 2em 0 -1em, -3em 0 0 -1em, -2em -2em 0 -1em;
+               }
+               25% {
+                 box-shadow: 0 -3em 0 -0.5em, 2em -2em 0 0, 3em 0 0 0.2em, 2em 2em 0 0, 0 3em 0 -1em, -2em 2em 0 -1em, -3em 0 0 -1em, -2em -2em 0 -1em;
+               }
+               37.5% {
+                 box-shadow: 0 -3em 0 -1em, 2em -2em 0 -1em, 3em 0em 0 0, 2em 2em 0 0.2em, 0 3em 0 0em, -2em 2em 0 -1em, -3em 0em 0 -1em, -2em -2em 0 -1em;
+               }
+               50% {
+                 box-shadow: 0 -3em 0 -1em, 2em -2em 0 -1em, 3em 0 0 -1em, 2em 2em 0 0em, 0 3em 0 0.2em, -2em 2em 0 0, -3em 0em 0 -1em, -2em -2em 0 -1em;
+               }
+               62.5% {
+                 box-shadow: 0 -3em 0 -1em, 2em -2em 0 -1em, 3em 0 0 -1em, 2em 2em 0 -1em, 0 3em 0 0, -2em 2em 0 0.2em, -3em 0 0 0, -2em -2em 0 -1em;
+               }
+               75% {
+                 box-shadow: 0em -3em 0 -1em, 2em -2em 0 -1em, 3em 0em 0 -1em, 2em 2em 0 -1em, 0 3em 0 -1em, -2em 2em 0 0, -3em 0em 0 0.2em, -2em -2em 0 0;
+               }
+               87.5% {
+                 box-shadow: 0em -3em 0 0, 2em -2em 0 -1em, 3em 0 0 -1em, 2em 2em 0 -1em, 0 3em 0 -1em, -2em 2em 0 0, -3em 0em 0 0, -2em -2em 0 0.2em;
+               }
+             }
+            </style>
+          </head><body><div class="container-fluid loader">`;
 
       // agregar acciones
       page.append(agregarAcciones(specifications));
@@ -141,11 +214,12 @@ Template.project.events({
       // TODO: ver si es posible asignar nombre y extension html
       window.open(uriContent, 'neuesDokument');
   },
+
   'click .save-page': function (e, tpl) {
       e.preventDefault();
-      var name = tpl.find('.pageName').value,
+      const name = tpl.find('.pageName').value,
           projectId = Session.get("currentProjectId");
-      //Pages.insert({ name: name, projectId: projectId});
+
       Meteor.call('addPage', projectId, name);
 
       $('#new-page-modal').modal('hide');
@@ -222,7 +296,6 @@ Template.project.events({
 
   'dragover .page': function (e, tpl) {
     e.preventDefault();
-
   },
 
   'drop .page': function (e, tpl) { console.log('ENTRE A DROP page');
@@ -270,7 +343,7 @@ Template.project.events({
         nodoOriginIdentyfyByClass = nodoOriginIdentyfyByClass[2];
 
     e.preventDefault();
-console.log('next',nextId);
+
     if (data.origin === 'node') {
       node = page.find('#'+data.id).clone();
       page.find('#'+data.id).remove();
@@ -302,11 +375,17 @@ console.log('next',nextId);
   },
 
   'click .node': function (e, tpl) {
+    // si esta presente el preview button entonces esta en edit mode
+    if($('.preview-button').is(':visible')) {
       editEvent(e, tpl);
+    }
+
   },
 
   'click .contenedor': function (e, tpl) {
+    if($('.preview-button').is(':visible')) {
       editEvent(e, tpl);
+    }
   },
 
   'mouseover .contenedor, mouseover .node': function (e, tpl) {
@@ -317,127 +396,157 @@ console.log('next',nextId);
 
 });
 
+// para obtener el valor real y no el calculado
+var getCss = function($elem, prop) {
+  var wasVisible = $elem.css('display') !== 'none';
+  try {
+      return $elem.hide().css(prop);
+  } finally {
+      if (wasVisible) $elem.show();
+  }
+};
+
 function editEvent(e, tpl) {
-      e.stopPropagation();
-      clearSelection();
-      $(e.currentTarget).addClass('active');
+  e.stopPropagation();
+  clearSelection();
+  $(e.currentTarget).addClass('active');
 
-      let isWidget = $(e.currentTarget).hasClass('node'),
-          elemTypeClass = isWidget ? '.node' : '.contenedor',
-          elemId = $(e.currentTarget).attr('id'),
-          type = $(elemTypeClass + '.active').attr('data-type'),
-          elem = isWidget ? Widgets.findOne({name : type}) : Grid.findOne({name : type}),
-          propertiesList = elem.styles,
-          actions = EventList.find(),
-          operations = OperationList.find(),
-          tags = Tags.find(),
-          tagsDisponibles = getTagsDisponibles(tags, isWidget),
-          elements = $('.etiqueta:hidden'),
-          contentTag = ContentTags.findOne({page : Session.get("currentPage"), el: elemId}),
-          especificacion = Specification.findOne({page : Session.get("currentPage"), el: elemId}),
-          propertiesHtml = '',
-          actionsHtml = '',
-          operationsHtml = '',
-          elementsHtml = '',
-          tagsHtlm = '',
-          options = {
-                title    : function(){
-                    return $('.properties-title').html() + (isWidget ? 'Widget' : 'Grid');
-                },
-                container: 'body',
-                html     : true,
-                placement: 'bottom',
-                content  : function() {
-                    return $('.properties-content').html();
-                }
-              };
+  let isWidget = $(e.currentTarget).hasClass('node'),
+      elemTypeClass = isWidget ? '.node' : '.contenedor',
+      elemId = $(e.currentTarget).attr('id'),
+      type = $(elemTypeClass + '.active').attr('data-type'),
+      elem = isWidget ? Widgets.findOne({name : type}) : Grid.findOne({name : type}),
+      propertiesList = elem.styles,
+      actions = EventList.find(),
+      operations = OperationList.find(),
+      tags = Tags.find(),
+      tagsDisponibles = getTagsDisponibles(tags, isWidget),
+      elements = $('.etiqueta:hidden'),
+      contentTag = ContentTags.findOne({page : Session.get("currentPage"), el: elemId}),
+      especificacion = Specification.findOne({page : Session.get("currentPage"), el: elemId}),
+      propertiesHtml = '',
+      actionsHtml = '',
+      operationsHtml = '',
+      elementsHtml = '',
+      tagsHtlm = '',
+      options = {
+            title    : function(){
+                return $('.properties-title').html() + (isWidget ? 'Widget' : 'Grid');
+            },
+            container: 'body',
+            html     : true,
+            placement: 'bottom',
+            content  : function() {
+                return $('.properties-content').html();
+            }
+          };
 
-      // armar lista de tags disponibles
-      tagsHtml = `<select class="content-tags form-control"><option value="-1"> Seleccione...</option>`;
-      tagsDisponibles.forEach(function(tag) {
-        let tagState = '',
-            tagData = tag.split('.'),
-            typeTagCompuesta = tagData.length > 1;
-        if (typeTagCompuesta) {
-            tagState = (contentTag && tagData[0] === contentTag.tag && tagData[1] === contentTag.item) ? 'selected' : '';
-        } else {
-            tagState = (contentTag && tagData[0] === contentTag.tag) ? 'selected' : '';
-        }
-        tagsHtml += `<option value="${tag}" ${tagState}> ${tag}</option>`;
-      });
-      tagsHtml += `</select><div class="tag-description"></div>`;
+  // armar lista de tags disponibles
+  tagsHtml = `<select class="content-tags form-control"><option value="-1"> Seleccione...</option>`;
+  tagsDisponibles.forEach(function(tag) {
+    let tagState = '',
+        tagData = tag.split('.'),
+        typeTagCompuesta = tagData.length > 1;
+    if (typeTagCompuesta) {
+        // agrego un * en la comparacion por los casos q visualmente pongo * para representar arrays
+        tagState = (contentTag &&
+          (tagData[0] === contentTag.tag || tagData[0] === contentTag.tag + '*')
+          && tagData[1] === contentTag.item) ?
+          'selected' : '';
+    } else {
+        tagState = (contentTag && tagData[0] === contentTag.tag) ? 'selected' : '';
+    }
+    tagsHtml += `<option value="${tag}" ${tagState}> ${tag}</option>`;
+  });
+  tagsHtml += `</select><div class="tag-description"></div>`;
 
-      actionsHtml = `<select class="actions form-control"><option value="-1"> Seleccione...</option>`;
-      actions.forEach(function(action) {
-        let state = (especificacion && especificacion.event === action.event) ? 'selected' : '';
-        actionsHtml += `<option value="${action.event}" ${state}> ${action.event}</option>`;
-      });
-      actionsHtml += `</select>`;
-      operationsHtml = `<select class="operations form-control"><option value="-1"> Seleccione...</option>`;
-      operations.forEach(function(op) {
-        let state = (especificacion && especificacion.operation === op.name) ? 'selected' : '';
-        operationsHtml += `<option value="${op.name}" ${state}> ${op.name}</option>`;
-      });
-      operationsHtml += `</select>`;
-      propertiesList.forEach(function(prop) {
-        let value = $(e.currentTarget).children().css(prop.name);
-        propertiesHtml += `<div class="form-group properties-form-group"><label for="edit-${prop.name}">
-          ${prop.label}</label><input type="text" value="${value}" class="form-control ${prop.inputClass}"></div>`;
-      });
-      elementsHtml = `<select class="elements form-control"><option value="-1"> Seleccione...</option>`;
-      elements.map(function(index, el){
-          let id = (el.id).substring(9),
-              state = (especificacion && especificacion.element === id) ? 'selected' : '';
-          elementsHtml += `<option value="${id}" ${state}> ${$(el).text()}</option>`;
-      });
-      elementsHtml += `</select>`;
+  actionsHtml = `<select class="actions form-control"><option value="-1"> Seleccione...</option>`;
+  actions.forEach(function(action) {
+    let state = (especificacion && especificacion.event === action.event) ? 'selected' : '';
+    actionsHtml += `<option value="${action.event}" ${state}> ${action.event}</option>`;
+  });
+  actionsHtml += `</select>`;
+  operationsHtml = `<select class="operations form-control"><option value="-1"> Seleccione...</option>`;
+  operations.forEach(function(op) {
+    let state = (especificacion && especificacion.operation === op.name) ? 'selected' : '';
+    operationsHtml += `<option value="${op.name}" ${state}> ${op.name}</option>`;
+  });
+  operationsHtml += `</select>`;
+  propertiesList.forEach(function(prop) {
+    let value = getCss($(e.currentTarget).children(),prop.name);
+    propertiesHtml += `<div class="form-group properties-form-group"><label for="edit-${prop.name}">
+      ${prop.label}</label><input type="text" value="${value}" class="form-control ${prop.inputClass}"></div>`;
+  });
+  elementsHtml = `<select class="elements form-control"><option value="-1"> Seleccione...</option>`;
+  elements.map(function(index, el){
+      let id = (el.id).substring(9),
+          state = (especificacion && especificacion.element === id) ? 'selected' : '';
+      elementsHtml += `<option value="${id}" ${state}> ${$(el).text()}</option>`;
+  });
+  elementsHtml += `</select>`;
 
-      $('#properties-form').html('');
-      $('#properties-form').append(propertiesHtml);
-      $('#events-list').html('');
-      $('#events-list').append(actionsHtml);
-      $('#operations-list').html('');
-      $('#operations-list').append(operationsHtml);
-      $('#elements-list').html('');
-      $('#elements-list').append(elementsHtml);
-      $('#content-form').html('');
-      $('#content-form').append(tagsHtml);
-      if (elem.includeText) {
-        $('#properties-form').prepend('<div class="form-group properties-form-group"><label for="editText">Texto</label><input type="text" value="" name="editText" class="editText form-control"></div>');
+  $('#properties-form').html('');
+  $('#properties-form').append(propertiesHtml);
+  $('#events-list').html('');
+  $('#events-list').append(actionsHtml);
+  $('#operations-list').html('');
+  $('#operations-list').append(operationsHtml);
+  $('#elements-list').html('');
+  $('#elements-list').append(elementsHtml);
+  $('#content-form').html('');
+  $('#content-form').append(tagsHtml);
+  if (elem.includeText || elem.includeVal) {
+    $('#properties-form').prepend('<div class="form-group properties-form-group"><label for="editText">Texto</label><input type="text" value="" name="editText" class="editText form-control"></div>');
+  }
+  if (elem.includeList) {
+    $('#properties-form').prepend('<div class="form-group properties-form-group"><label for="editList">Items</label><input type="text" value="" name="editList" class="editList form-control"><p class="small">Separar items con coma</p></div>');
+  }
+  if (elem.includeSrc) {
+    $('#properties-form').prepend('<div class="form-group properties-form-group"><label for="editSrc">Src</label><input type="text" value="" name="editSrc" class="editSrc form-control"></div>');
+  }
+
+  $(elemTypeClass + '.active').popover(options)
+    .popover('show')
+    .on('shown.bs.popover', function () {
+      $('.close-properties').on('click', function(e) {
+          e.stopPropagation();
+          $(elemTypeClass + '.active').popover('destroy');
+      });
+      $('.deleteNode').on('click', {id: elemId}, isWidget ? deleteNodeEvent : deleteContenedorEvent);
+      $('.applyEditText').on('click',  {id: elemId}, isWidget ? editNodeEvent : editGridEvent);
+      //$('.applyOperations').on('click',  {id: elemId, isWidget: isWidget}, editOperations);
+      //$('.applyContentTags').on('click',  {id: elemId, isWidget: isWidget}, editContentTags);
+      // hago esto manualmente en vez de usar .tab() porque tengo los id en la plantilla y rompen
+      $('.popover #properties-tabs a').on('click', function(e) {
+          let id = $(this).attr('href');
+          $('.tab-pane').removeClass('active');  console.log('click en tab', id);
+          $('.popover ' + id).addClass('active');
+      });
+      // selecciono la primer tab para que no quede marcada la anterior seleccionada
+      $('a#style-tab').click();
+
+      $('.popover .content-tags').on('click', function(e) {
+          // se selecciono una tag de contenido
+          // muestro debajo de la lista la descripcion
+          let selTag = $('.popover .content-tags').val(),
+              tagParts = selTag.split('.'),
+              tag = Tags.findOne({name: tagParts[0]});
+
+          $('.tag-description').html(tag ? tag.text : '');
+      });
+      if (elem.includeText || elem.includeVal) {
+        $('.editText').val( $(e.currentTarget).text());
       }
-
-      $(elemTypeClass + '.active').popover(options)
-        .popover('show')
-        .on('shown.bs.popover', function () {
-          $('.close-properties').on('click', function(e) {
-              e.stopPropagation();
-              $('.node.active').popover('destroy');
-          });
-          $('.deleteNode').on('click', {id: elemId}, isWidget ? deleteNodeEvent : deleteContenedorEvent);
-          $('.applyEditText').on('click',  {id: elemId}, isWidget ? editNodeEvent : editGridEvent);
-          $('.applyOperations').on('click',  {id: elemId, isWidget: isWidget}, editOperations);
-          $('.applyContentTags').on('click',  {id: elemId, isWidget: isWidget}, editContentTags);
-          // hago esto manualmente en vez de usar .tab() porque tengo los id en la plantilla y rompen
-          $('.popover #properties-tabs a').on('click', function(e) {
-              let id = $(this).attr('href');
-              $('.tab-pane').removeClass('active');  console.log('click en tab', id);
-              $('.popover ' + id).addClass('active');
-          });
-          // selecciono la primer tab para que no quede marcada la anterior seleccionada
-          $('a#style-tab').click();
-
-          $('.popover .content-tags').on('click', function(e) {
-              // se selecciono una tag de contenido
-              // muestro debajo de la lista la descripcion
-              let selTag = $('.popover .content-tags').val(),
-                  tagParts = selTag.split('.'),
-                  tag = Tags.findOne({name: tagParts[0]});
-
-              $('.tag-description').html(tag ? tag.text : '');
-          });
-          $('.editText').val( $(e.currentTarget).text());
-          $('.elementName').val( $(e.currentTarget).attr('data-element-name'));
-        });
+      if (elem.includeSrc) {
+        $('.editSrc').val($(e.currentTarget).children().attr('src'));
+      }
+      if (elem.includeList) {
+        let list = '';
+        $(e.currentTarget).find('option').each((index, elem)=>{ list = list + $(elem).text() + ','; });
+        $('.editList').val(list.slice(0,-1));
+      }
+      $('.elementName').val( $(e.currentTarget).attr('data-element-name'));
+    });
   }
 
 //retorna lista de tags de acuerdo a si es grid o widget
@@ -517,7 +626,11 @@ function agregarScriptContentTagFunction() {
                     elContent.addClass('cloned');
                     items.forEach(function(item){
                       var e = elContent.find(item.el);
-                      e.html(e.html().replace(e.text(),htmlRes[item.item]));
+                      if (e[0].children[0].tagName === 'IMG') {
+                        e[0].children[0].src = htmlRes[item.item];
+                      } else {
+                        e.html(e.html().replace(e.text(),htmlRes[item.item]));
+                      }
                     });
                     elem.after(elContent);
                   }
@@ -527,8 +640,8 @@ function agregarScriptContentTagFunction() {
 
 function agregarContentFromTags(contentTags) {
     let scriptTags = '';
-    scriptTags += `<script type="text/javascript">
-      window.addEventListener("DOMContentLoaded",function() {`;
+    scriptTags += `<script>
+    document.addEventListener("DOMContentLoaded",function(event) { `;
     scriptTags += agregarScriptContentTagFunction();
     contentTags.forEach(function(ct) {
         let t = Tags.findOne({name: ct.tag}),
@@ -542,6 +655,7 @@ function agregarContentFromTags(contentTags) {
                   scriptTags += `
                           (function () {
                             var res = ${tagFunction}(this, ${tagConfig}, function(results) {
+                                $('.container-fluid').removeClass('loader');
                                 if (results.length>0) {
                                   results.forEach(function(r) {
                                       //por cada uno de los resultados encontrados, llamo a generator
@@ -550,9 +664,6 @@ function agregarContentFromTags(contentTags) {
                                   //al final tengo q borrar el contenedor original
                                   $('#${ct.el}').not('.cloned').remove();
                                 }
-                            },
-                            function(error){
-                              console.log(error);
                             });
                           })();`;
                         }
@@ -680,33 +791,53 @@ function editNodeEvent(e) {
     propertiesList.forEach(function(prop) {
       styles[prop.name] = $('.popover .' + prop.inputClass).val();
     });
-    if ( $('.popover .editText').val().length > 0) {
+    if(widget.includeText) {
       node.html(node.html().replace(node.text(), $('.popover .editText').val()));
     }
-    if ( $('.popover .elementName').val().length > 0) {
-      node.attr('data-element-name', $('.popover .elementName').val());
+    if(widget.includeVal) {
+      node.children().val($('.popover .editText').val());
     }
+    if(widget.includeSrc) {
+      node.children().attr('src',$('.popover .editSrc').val());
+    }
+    if(widget.includeList) {
+      let nodeSelect = node.find('select');
+      nodeSelect.html('');
+      const list = $('.popover .editList').val().split(',');
+      list.forEach((l) => nodeSelect.append($('<option>', {
+        value: l,
+        text: l
+    })));
+    }
+    node.attr('data-element-name', $('.popover .elementName').val());
+
     if ($('.popover .elementName').val().length > 0) {
       etiqueta.html('<p>'+$('.popover .elementName').val()+'</p>');
       node.before(etiqueta);
+    } else {
+      page.find('#etiqueta-'+id).remove();
     }
+
+    node.children().css(styles);
+
+    editOperations(id, true);
+    editContentTags(id, true);
+
     // agregar texto a la etiqueta de contenido (tag) si tiene
     if (contentTag) {
       node.before(getEtiquetaContent(page, id, contentTag));
     }
 
-    node.children().css(styles);
-
     Meteor.call('updatePageContent', Session.get('currentProjectId'), Session.get('currentPage'), page.html());
     $('.node.active').popover('destroy');
 };
 
-function editOperations(e) {
-    let elemTypeClass = e.data.isWidget ? '.node' : '.contenedor',
+function editOperations(id, isWidget) {
+    let elemTypeClass = isWidget ? '.node' : '.contenedor',
         action = {
           project: Session.get('currentProjectId'),
           page: Session.get('currentPage'),
-          el: e.data.id,
+          el: id,
           event: $('.popover .actions').val(),
           operation: $('.popover .operations').val(),
           element: $('.popover .elements').val()
@@ -714,31 +845,31 @@ function editOperations(e) {
 
     if (action.event != '-1' && action.operation != '-1' && action.element != '-1') {
       Meteor.call('addAction',  Session.get('currentProjectId'), action);
-      $(elemTypeClass + '.active').popover('destroy');
     } else {
-      //show error
+      // selecciono ninguno, borro lo q tenia
+      // tendría que avisar, preguntar si o no?
+      Meteor.call('deleteAction',  action);
     }
 };
 
-function editContentTags(e) {
-    let elemTypeClass = e.data.isWidget ? '.node' : '.contenedor',
+function editContentTags(id, isWidget) {
+    let elemTypeClass = isWidget ? '.node' : '.contenedor',
         selTag = $('.popover .content-tags').val(),
         tagParts = selTag.split('.'),
         tag = {
           project: Session.get('currentProjectId'),
           page: Session.get('currentPage'),
-          el: e.data.id,
+          el: id,
           tag: tagParts[0].replace('*', ''),
           item: tagParts[1] || ''
-        };
-        console.log(tag);
+        }; console.log('tag', tag);
     if (tag.tag != '-1') {
       Meteor.call('addTag', tag);
     } else {
-      //selecciono ninguno, borro lo q tenia
+      // selecciono ninguno, borro lo q tenia
+      // tendría que avisar, preguntar si o no?
       Meteor.call('deleteTag',  tag);
     }
-    $(elemTypeClass + '.active').popover('destroy');
 };
 
 function editGridEvent(e) {
@@ -779,6 +910,9 @@ function editGridEvent(e) {
       element.before(etiquetaContent);
     }
     element.children().css(styles);
+
+    editOperations(id, false);
+    editContentTags(id, false);
 
     Meteor.call('updatePageContent', Session.get('currentProjectId'), Session.get('currentPage'), page.html());
     $('.contenedor.active').popover('destroy');

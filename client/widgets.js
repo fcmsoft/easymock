@@ -86,6 +86,11 @@ Widgets.insert(
         name: 'padding',
         inputClass: 'editPadding',
         label: 'Padding',
+      },
+      {
+        name: 'margin',
+        inputClass: 'editDisplay',
+        label: 'Margin',
       }
     ],
     includeText: true
@@ -127,9 +132,15 @@ Widgets.insert(
         name: 'padding',
         inputClass: 'editPadding',
         label: 'Padding',
+      },
+      {
+        name: 'margin',
+        inputClass: 'editDisplay',
+        label: 'Margin',
       }
     ],
-    includeText: true
+    includeText: false,
+    includeVal: true
     }
 );
 Widgets.insert(
@@ -173,6 +184,11 @@ Widgets.insert(
         name: 'padding',
         inputClass: 'editPadding',
         label: 'Padding',
+      },
+      {
+        name: 'margin',
+        inputClass: 'editDisplay',
+        label: 'Margin',
       }
     ],
     includeText: true
@@ -219,6 +235,11 @@ Widgets.insert(
         name: 'padding',
         inputClass: 'editPadding',
         label: 'Padding',
+      },
+      {
+        name: 'margin',
+        inputClass: 'editDisplay',
+        label: 'Margin',
       }
     ],
     includeText: true
@@ -229,8 +250,7 @@ Widgets.insert(
   {
     name: 'select',
     icon: 'flaticon-drop10',
-    template: '<select><option value="opcion1">Opcion 1</option></select>',
-    text: '',
+    template: '<select class="form-control"><option value="opcion1">Opcion 1</option></select>',
     styles: [
       {
         name: 'color',
@@ -256,8 +276,48 @@ Widgets.insert(
         name: 'border',
         inputClass: 'editBorder',
         label: 'Border',
+      },
+      {
+        name: 'margin',
+        inputClass: 'editDisplay',
+        label: 'Margin',
       }
     ],
-    includeText: true
+    includeText: false,
+    includeList: true
+    }
+);
+
+Widgets.insert(
+  {
+    name: 'image',
+    icon: 'flaticon-image2',
+    template: '<img src="..." alt="image">',
+    src: '',
+    styles: [
+      {
+        name: 'height',
+        inputClass: 'editHeight',
+        label: 'Height',
+      },
+      {
+        name: 'width',
+        inputClass: 'editWidth',
+        label: 'Width',
+      },
+      {
+        name: 'border',
+        inputClass: 'editBorder',
+        label: 'Border',
+      },
+      {
+        name: 'margin',
+        inputClass: 'editDisplay',
+        label: 'Margin',
+      }
+    ],
+    includeText: false,
+    includeList: false,
+    includeSrc: true
     }
 );

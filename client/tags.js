@@ -67,14 +67,20 @@ Tags.insert(
 	    context.initWOAscript = function() {
         var commonUrl = config.commonUrl,
             result = [],
-            decoratedTemplate = {};
-
-		      try{
+            decoratedTemplate = {}
+            res;
+            //remove loader from body
+            console.log('se cargo WOA', WOA);
+            
+		        try{
             	//Defining a IO template
             	var newsTemplate = WOA.newInformationObjectTemplate({
             		name: config.newsTemplate.name, tag: config.newsTemplate.tag, url: commonUrl,
             		xpath: config.newsTemplate.xpath
-            	});
+              });
+              
+              console.log(newsTemplate);
+              
             	//Add properties
               config.properties.forEach(function(prop) {
                   newsTemplate.addProperty({
@@ -93,9 +99,15 @@ Tags.insert(
             	//Retrieving Information Objects based on the templates
               WOA.getInformationObjects(decoratedTemplate, function(ioses) {
                   for (var i = 0; i < ioses.length; i++) {
-                      let res = {};
-                      config.properties.forEach(function(p){ console.log(p);
-                        res[p.tag] = ioses[i].getPropertyByTagName(p.tag).getValue();
+                      res = {};
+                      config.properties.forEach(function(p){
+                        if (p.name === 'Image') {
+                          var domElem = document.createElement("dom");
+                          domElem.innerHTML = ioses[i].getPropertyByTagName(p.tag).getDomElement();
+                          res[p.tag] = domElem.firstChild.getAttribute("data-original-x2");
+                        } else {
+                          res[p.tag] = ioses[i].getPropertyByTagName(p.tag).getValue();
+                        }
                       });
                       result.push(res);
                   };
@@ -105,6 +117,6 @@ Tags.insert(
         }
     }`,
     type: 'array',
-    items: ['title', 'content', 'image', 'tag']
+    items: ['title', 'content', 'thumbnail', 'tag']
   }
 );
