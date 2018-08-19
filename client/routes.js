@@ -1,8 +1,12 @@
 Router.route('/project/:_id', {
   name: 'project',
   onBeforeAction: function() {
-    Session.set("currentProjectId", this.params._id);
-    this.next();
+    if (! Meteor.userId()) {
+      this.render('home');
+    } else {
+      Session.set("currentProjectId", this.params._id);
+      this.next();
+    }
   }
   });
 

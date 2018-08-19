@@ -32,11 +32,6 @@ Widgets.insert(
         label: 'Height',
       },
       {
-        name: 'width',
-        inputClass: 'editWidth',
-        label: 'Width',
-      },
-      {
         name: 'border',
         inputClass: 'editBorder',
         label: 'Border',
@@ -71,11 +66,6 @@ Widgets.insert(
         name: 'height',
         inputClass: 'editHeight',
         label: 'Height',
-      },
-      {
-        name: 'width',
-        inputClass: 'editWidth',
-        label: 'Width',
       },
       {
         name: 'border',
@@ -171,11 +161,6 @@ Widgets.insert(
         label: 'Height',
       },
       {
-        name: 'width',
-        inputClass: 'editWidth',
-        label: 'Width',
-      },
-      {
         name: 'border',
         inputClass: 'editBorder',
         label: 'Border',
@@ -220,11 +205,6 @@ Widgets.insert(
         name: 'height',
         inputClass: 'editHeight',
         label: 'Height',
-      },
-      {
-        name: 'width',
-        inputClass: 'editWidth',
-        label: 'Width',
       },
       {
         name: 'border',

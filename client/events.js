@@ -658,7 +658,7 @@ function agregarContentFromTags(contentTags) {
                                 $('.container-fluid').removeClass('loader');
                                 if (results.length>0) {
                                   results.forEach(function(r) {
-                                      //por cada uno de los resultados encontrados, llamo a generator
+                                      //por cada uno de los resultados encontrados, llamo al generator
                                       arrayGenerator('#${ct.el}', ${printItems(relativeElems)}, r);
                                   });
                                   //al final tengo q borrar el contenedor original
@@ -676,7 +676,7 @@ function agregarContentFromTags(contentTags) {
         }
 
       });
-      scriptTags += `});</script>`
+      scriptTags += `});</script>`;
       return scriptTags;
 }
 
@@ -785,8 +785,7 @@ function editNodeEvent(e) {
             $("<div/>", {
               class: 'etiqueta',
               id: 'etiqueta-' + id
-            }),
-        contentTag = ContentTags.findOne({page : Session.get("currentPage"), el: id});
+            });
 
     propertiesList.forEach(function(prop) {
       styles[prop.name] = $('.popover .' + prop.inputClass).val();
@@ -812,29 +811,31 @@ function editNodeEvent(e) {
     node.attr('data-element-name', $('.popover .elementName').val());
 
     if ($('.popover .elementName').val().length > 0) {
-      etiqueta.html('<p>'+$('.popover .elementName').val()+'</p>');
+      etiqueta.html('<p>' + $('.popover .elementName').val()+'</p>');
       node.before(etiqueta);
     } else {
-      page.find('#etiqueta-'+id).remove();
+      page.find('#etiqueta-' + id).remove();
     }
 
     node.children().css(styles);
 
-    editOperations(id, true);
-    editContentTags(id, true);
+    editOperations(id);
+    const tag = editContentTags(id);
+
+    const contentTag = ContentTags.findOne({page : Session.get("currentPage"), el: id}) || tag;
 
     // agregar texto a la etiqueta de contenido (tag) si tiene
-    if (contentTag) {
+    if (contentTag && contentTag.tag !== '-1') {
       node.before(getEtiquetaContent(page, id, contentTag));
     }
 
     Meteor.call('updatePageContent', Session.get('currentProjectId'), Session.get('currentPage'), page.html());
+
     $('.node.active').popover('destroy');
 };
 
-function editOperations(id, isWidget) {
-    let elemTypeClass = isWidget ? '.node' : '.contenedor',
-        action = {
+function editOperations(id) {
+    let action = {
           project: Session.get('currentProjectId'),
           page: Session.get('currentPage'),
           el: id,
@@ -852,9 +853,8 @@ function editOperations(id, isWidget) {
     }
 };
 
-function editContentTags(id, isWidget) {
-    let elemTypeClass = isWidget ? '.node' : '.contenedor',
-        selTag = $('.popover .content-tags').val(),
+function editContentTags(id) {
+    let selTag = $('.popover .content-tags').val(),
         tagParts = selTag.split('.'),
         tag = {
           project: Session.get('currentProjectId'),
@@ -870,6 +870,7 @@ function editContentTags(id, isWidget) {
       // tendría que avisar, preguntar si o no?
       Meteor.call('deleteTag',  tag);
     }
+    return tag;
 };
 
 function editGridEvent(e) {
