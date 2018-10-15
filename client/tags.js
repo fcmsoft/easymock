@@ -60,8 +60,8 @@ Tags.insert(
 Tags.insert(
   {
     config: woa_config || {},
-    name: 'diario-WOA',
-    text: 'TAG SET de WOA con info de noticias',
+    name: 'diario-registrado-WOA',
+    text: 'TAG SET de WOA con info de noticias de Diario Registrado',
     process: `function(context, config, callback) {
       //This method is mandatory. It will be called by WOA when the API is ready
 	    context.initWOAscript = function() {
@@ -71,16 +71,16 @@ Tags.insert(
             res;
             //remove loader from body
             console.log('se cargo WOA', WOA);
-            
+
 		        try{
             	//Defining a IO template
             	var newsTemplate = WOA.newInformationObjectTemplate({
             		name: config.newsTemplate.name, tag: config.newsTemplate.tag, url: commonUrl,
             		xpath: config.newsTemplate.xpath
               });
-              
+
               console.log(newsTemplate);
-              
+
             	//Add properties
               config.properties.forEach(function(prop) {
                   newsTemplate.addProperty({
@@ -107,7 +107,7 @@ Tags.insert(
                           res[p.tag] = domElem.firstChild.getAttribute("data-original-x2");
                         } else {
                           res[p.tag] = ioses[i].getPropertyByTagName(p.tag).getValue();
-                        }
+                        } console.log(ioses[i].getPropertyByTagName(p.tag));
                       });
                       result.push(res);
                   };
@@ -117,6 +117,73 @@ Tags.insert(
         }
     }`,
     type: 'array',
-    items: ['title', 'content', 'thumbnail', 'tag']
+    items: ['title', 'content', 'thumbnail', 'fecha']
+  }
+);
+
+Tags.insert(
+  {
+    config: woa_config2 || {},
+    name: 'diario-fortuna-WOA',
+    text: 'TAG SET de WOA con info de noticias de Diario Fortuna Web',
+    process: `function(context, config, callback) {
+      //This method is mandatory. It will be called by WOA when the API is ready
+	    context.initWOAscript = function() {
+        var commonUrl = config.commonUrl,
+            result = [],
+            decoratedTemplate = {}
+            res;
+            //remove loader from body
+            console.log('se cargo WOA', WOA);
+
+		        try{
+            	//Defining a IO template
+            	var newsTemplate = WOA.newInformationObjectTemplate({
+            		name: config.newsTemplate.name, tag: config.newsTemplate.tag, url: commonUrl,
+            		xpath: config.newsTemplate.xpath
+              });
+
+              console.log(newsTemplate);
+
+            	//Add properties
+              config.properties.forEach(function(prop) {
+                  newsTemplate.addProperty({
+                    name: prop.name, tag: prop.tag, url: commonUrl,
+                    xpath: prop.xpath
+                  });
+              });
+            	if (config.decoratedTemplate) {
+              	//Apply a decorator & select some messages
+              	decoratedTemplate = WOA.newDecorator("NewsDecorator", newsTemplate);
+              	decoratedTemplate.selectMessage(config.decoratedTemplate.selectMessage);
+              	decoratedTemplate.mapMessageParam(
+                  config.decoratedTemplate.mapMessageParam.key,
+                  config.decoratedTemplate.mapMessageParam.value);
+              }
+            	//Retrieving Information Objects based on the templates
+              WOA.getInformationObjects(decoratedTemplate, function(ioses) {
+                  for (var i = 0; i < ioses.length; i++) {
+                      res = {};
+                      console.log('entro');
+                      config.properties.map(function(p){
+                        if (p.name === 'Image') {
+                          var domElem = document.createElement("dom");
+                          domElem.innerHTML = ioses[i].getPropertyByTagName(p.tag).getDomElement();
+                          res[p.tag] = domElem.firstChild.getAttribute("data-original-x2");
+                        } else {
+                          res[p.tag] = ioses[i].getPropertyByTagName(p.tag).getValue();
+                        }
+                        console.log(res);
+                      });
+                      console.log('salgo');
+                      result.push(res);
+                  };
+                  callback(result);
+              });
+          }catch(err){console.log(err);}
+        }
+    }`,
+    type: 'array',
+    items: ['title', 'content']
   }
 );

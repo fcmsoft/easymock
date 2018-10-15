@@ -388,11 +388,6 @@ Template.project.events({
     }
   },
 
-  'mouseover .contenedor, mouseover .node': function (e, tpl) {
-      e.stopPropagation();
-      //clearSelection(); console.log('entre a hover', e.currentTarget);
-      //$(e.currentTarget).addClass('active');
-  },
 
 });
 
